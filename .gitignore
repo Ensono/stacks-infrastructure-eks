@@ -1,7 +1,7 @@
 # Local .terraform directories
 **/.terraform/*
 
-# Ignore Kubernetes file
+# Ignore Kubernetes config file
 kubeconfig_*
 
 
