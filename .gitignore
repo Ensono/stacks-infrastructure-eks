@@ -1,6 +1,10 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Ignore Kubernetes file
+kubeconfig_*
+
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
