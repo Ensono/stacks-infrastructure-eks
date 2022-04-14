@@ -24,6 +24,18 @@ provider "kubernetes" {
 
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = module.amido_stacks_infra.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.amido_stacks_infra.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      args        = ["eks", "get-token", "--cluster-name", module.amido_stacks_infra.cluster_name]
+      command     = "aws"
+    }
+  }
+}
+
 terraform {
   required_version = ">= 0.14"
 
