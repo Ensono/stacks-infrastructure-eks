@@ -1,5 +1,5 @@
 ########################################
-# Environment setting
+# Environment Configuration
 ########################################
 region   = "eu-west-2"
 env      = "Dev"
@@ -7,7 +7,7 @@ app_name = "Stacks-DotNet"
 owner    = "Terraform"
 
 ########################################
-# Cluster setting
+# Cluster Configuration
 ########################################
 
 cluster_name                    = "amido-stacks"
@@ -34,3 +34,9 @@ map_users = [
     groups   = ["system:masters"]
   }
 ]
+
+########################################
+# DNS Configuration
+########################################
+
+dns_hostedzone_name = "nonprodaws.amidostacks.com"
