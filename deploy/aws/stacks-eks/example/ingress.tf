@@ -2,7 +2,7 @@
 data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
   statement {
     actions = [
-    "sts:AssumeRoleWithWebIdentity",
+      "sts:AssumeRoleWithWebIdentity",
     ]
 
     principals {
@@ -34,7 +34,7 @@ resource "aws_iam_role" "aws_lb_controller" {
 resource "aws_iam_role_policy" "aws_lb_controller" {
   name = "${var.cluster_name}-aws-lb-controller-sa"
   role = aws_iam_role.aws_lb_controller.id
-  
+
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -247,7 +247,7 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
 EOF
 }
 
-# Kubernetes Stuff Service Account, cluster Role and Cluster Role Binding
+# Kubernetes Objects: Service Account, Cluster Role and Cluster Role Binding
 
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   depends_on = [module.amido_stacks_infra]

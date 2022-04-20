@@ -247,7 +247,7 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
 EOF
 }
 
-# Kubernetes Stuff Service Account, cluster Role and Cluster Role Binding
+# Kubernetes Objects: Service Account, Cluster Role and Cluster Role Binding
 
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   depends_on = [module.amido_stacks_infra]

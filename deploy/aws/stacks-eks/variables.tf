@@ -80,3 +80,10 @@ variable "owner" {
   description = "Owner of the Application/Project used in tags"
   type        = string
 }
+
+
+variable "dns_hostedzone_name" {
+
+  description = "Name of the hosted-zone in Route53"
+  type        = string
+}
