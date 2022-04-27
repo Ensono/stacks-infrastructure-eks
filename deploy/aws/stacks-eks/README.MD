@@ -21,7 +21,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_amido_stacks_infra"></a> [amido\_stacks\_infra](#module\_amido\_stacks\_infra) | git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks | n/a |
-| <a name="module_s3_policy_role"></a> [s3\_policy\_role](#module\_s3\_policy\_role) | git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa | feature/aws |
+| <a name="module_s3_policy_role"></a> [s3\_policy\_role](#module\_s3\_policy\_role) | git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa | n/a |
 
 ## Resources
 
