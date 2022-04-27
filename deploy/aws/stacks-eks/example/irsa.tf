@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "s3_policy" {
 }
 
 module "s3_policy_role" {
-  source                = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=feature/aws"
+  source                = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa"
   enable_irsa           = true
   namespace             = "default"
   serviceaccount        = "s3-policy"
