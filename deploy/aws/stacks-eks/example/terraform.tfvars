@@ -32,6 +32,11 @@ map_users = [
     userarn  = "arn:aws:iam::316154162729:user/william.ayerst@amido.com"
     username = "william.ayerst@amido.com"
     groups   = ["system:masters"]
+  },
+    {
+    userarn  = "arn:aws:iam::316154162729:user/darren.smallwood@amido.com"
+    username = "darren.smallwood@amido.com"
+    groups   = ["system:masters"]
   }
 ]
 
