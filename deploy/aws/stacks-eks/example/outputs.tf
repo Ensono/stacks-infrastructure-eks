@@ -49,3 +49,21 @@ output "cluster_certificate_authority_data" {
   description = "base64 encoded certificate data required to communicate with your cluster"
   value       = module.amido_stacks_infra.cluster_certificate_authority_data
 }
+
+################
+# Route 53 Zones
+################
+output "route53_zone_zone_id" {
+  description = "Zone ID of Route53 zone"
+  value       = var.enable_zone ? module.amido_stacks_infra.route53_zone_zone_id : null
+}
+
+output "route53_zone_name_servers" {
+  description = "Name servers of Route53 zone"
+  value       = var.enable_zone ? module.amido_stacks_infra.route53_zone_name_servers : null
+}
+
+output "route53_zone_name" {
+  description = "Name of the Route53 zone"
+  value       = var.enable_zone ? module.amido_stacks_infra.route53_zone_name : null
+}

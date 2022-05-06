@@ -87,3 +87,12 @@ variable "dns_hostedzone_name" {
   description = "Name of the hosted-zone in Route53"
   type        = string
 }
+variable "enable_zone" {
+  description = "Conditionally create route53 zones"
+  type        = bool
+}
+
+variable "public_zones" {
+  type        = map(any)
+  description = "Map of Route53 zone parameters"
+}

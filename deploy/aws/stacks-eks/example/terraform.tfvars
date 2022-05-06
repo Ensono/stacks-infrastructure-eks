@@ -45,3 +45,10 @@ map_users = [
 ########################################
 
 dns_hostedzone_name = "nonprodaws.amidostacks.com"
+
+enable_zone = true
+public_zones = {
+  "test2.amido.com" = {
+    comment = "This is a sample hosted zone don't use in production or any deployment purpose"
+  }
+}
