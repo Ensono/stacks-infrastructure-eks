@@ -33,9 +33,14 @@ map_users = [
     username = "william.ayerst@amido.com"
     groups   = ["system:masters"]
   },
-    {
+  {
     userarn  = "arn:aws:iam::316154162729:user/darren.smallwood@amido.com"
     username = "darren.smallwood@amido.com"
+    groups   = ["system:masters"]
+  },
+  {
+    userarn  = "arn:aws:iam::316154162729:user/terraform"
+    username = "terraform"
     groups   = ["system:masters"]
   }
 ]
@@ -48,7 +53,7 @@ dns_hostedzone_name = "nonprodaws.amidostacks.com"
 
 enable_zone = true
 public_zones = {
-  "test2.amido.com" = {
+  "test.amido.com" = {
     comment = "This is a sample hosted zone don't use in production or any deployment purpose"
   }
 }

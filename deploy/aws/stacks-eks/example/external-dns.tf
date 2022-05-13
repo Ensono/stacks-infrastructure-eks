@@ -167,7 +167,7 @@ resource "kubernetes_deployment" "external_dns" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name = "external-dns"
+    name      = "external-dns"
     namespace = "kube-system"
   }
 
