@@ -1,6 +1,6 @@
 ########################################
 # EKS INFRA OUTPUT
-########################################
+#########################################
 output "cluster_id" {
   description = "EKS cluster ID."
   value       = module.amido_stacks_infra.cluster_id
@@ -52,7 +52,7 @@ output "cluster_certificate_authority_data" {
 
 ################
 # Route 53 Zones
-################
+#################
 output "route53_zone_zone_id" {
   description = "Zone ID of Route53 zone"
   value       = var.enable_zone ? module.amido_stacks_infra.route53_zone_zone_id : null
@@ -64,6 +64,14 @@ output "route53_zone_name_servers" {
 }
 
 output "route53_zone_name" {
-  description = "Name of the Route53 zone"
+  description = "Name of the Route53 zone."
   value       = var.enable_zone ? module.amido_stacks_infra.route53_zone_name : null
+}
+
+##############
+# Cloud Watch
+###############
+output "cloudwatch_log_group_arn" {
+  description = "ARN of the cloudwatch log group."
+  value       = aws_cloudwatch_log_group.amido_stacks_eks.arn
 }
