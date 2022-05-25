@@ -378,5 +378,4 @@ resource "helm_release" "aws_load_balancer_controller" {
     name  = "replicaCount"
     value = "1"
   }
-
 }
