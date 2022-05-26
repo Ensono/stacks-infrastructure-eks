@@ -65,34 +65,40 @@ variable "map_roles" {
 variable "env" {
 
   default     = "Test"
-  description = "Name of the deployment environment"
+  description = "Name of the deployment environment."
   type        = string
 }
 
 variable "app_name" {
 
-  description = "Friendly-Name of the Application/Project used in tags"
+  description = "Friendly-Name of the Application/Project used in tags."
   type        = string
 }
 
 variable "owner" {
 
-  description = "Owner of the Application/Project used in tags"
+  description = "Owner of the Application/Project used in tags."
   type        = string
 }
 
 
 variable "dns_hostedzone_name" {
 
-  description = "Name of the hosted-zone in Route53"
+  description = "Name of the hosted-zone in Route53."
   type        = string
 }
 variable "enable_zone" {
-  description = "Conditionally create route53 zones"
+  description = "Conditionally create route53 zones."
   type        = bool
 }
 
 variable "public_zones" {
   type        = map(any)
-  description = "Map of Route53 zone parameters"
+  description = "Map of Route53 zone parameters."
+}
+
+variable "log_retention_period" {
+  type        = string
+  description = "Specifies the number of days you want to retain log events in the specified log group"
+  default     = 180
 }
