@@ -25,6 +25,6 @@ module "amido_stacks_infra" {
   map_roles = var.map_roles
   map_users = var.map_users
 
-  # Pass Default Tag Values to Underlying Modules
+  # Pass Non-default Tag Values to Underlying Modules
   tags = local.tags
 }
