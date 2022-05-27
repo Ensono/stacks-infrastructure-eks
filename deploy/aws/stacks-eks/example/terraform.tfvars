@@ -57,3 +57,19 @@ public_zones = {
     comment = "This is a sample hosted zone don't use in production or any deployment purpose"
   }
 }
+
+########################################
+# IRSA Configuration
+########################################
+s3_irsa = {
+  create               = true
+  namespace            = "default",
+  service-account-name = "access-s3-only"
+}
+
+stacks_dotnet_irsa = {
+  create               = true
+  namespace            = "nonprod-dev-netcore-api-cqrs",
+  service-account-name = "access-sqs-sns-dd"
+}
+ 

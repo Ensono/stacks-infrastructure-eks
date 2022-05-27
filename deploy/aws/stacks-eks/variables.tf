@@ -102,3 +102,13 @@ variable "log_retention_period" {
   description = "Specifies the number of days you want to retain log events in the specified log group"
   default     = 180
 }
+
+variable "stacks_dotnet_irsa" {
+  type        = map(any)
+  description = "Specifies namespace and service-account name for stacks-dotnet IRSA"
+}
+
+variable "s3_irsa" {
+  type        = map(any)
+  description = "Specifies namespace and service-account name for S3 IRSA"
+}
