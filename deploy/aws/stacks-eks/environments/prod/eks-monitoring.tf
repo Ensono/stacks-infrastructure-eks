@@ -7,6 +7,7 @@ module "container_insights" {
   version = "1.0.0"
 
   aws_region            = var.region
+  iam_role_name         = "eks-container-insights-role-${lower(var.env)}"
   eks_cluster_name      = module.amido_stacks_infra.cluster_name
   eks_oidc_provider_url = module.amido_stacks_infra.cluster_oidc_issuer_url
   eks_oidc_provider_arn = "arn:aws:iam::${local.account_id}:oidc-provider/${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}"
