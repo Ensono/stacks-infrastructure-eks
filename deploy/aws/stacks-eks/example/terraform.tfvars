@@ -34,16 +34,17 @@ map_users = [
     groups   = ["system:masters"]
   },
   {
-    userarn  = "arn:aws:iam::316154162729:user/darren.smallwood@amido.com"
-    username = "darren.smallwood@amido.com"
-    groups   = ["system:masters"]
-  },
-  {
     userarn  = "arn:aws:iam::316154162729:user/terraform"
     username = "terraform"
     groups   = ["system:masters"]
   }
 ]
+map_roles = [{
+  groups   = ["system:masters"]
+  rolearn  = "arn:aws:iam::316154162729:role/eks-admin-role"
+  username = "eks-admin-role"
+}]
+
 
 ########################################
 # DNS Configuration
