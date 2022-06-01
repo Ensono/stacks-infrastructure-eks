@@ -25,10 +25,10 @@ data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
 }
 
 resource "aws_iam_role" "aws_lb_controller" {
-  name                  = "${var.cluster_name}-aws-lb-controller-sa"
+  name                  = "${var.cluster_name}-aws-lb-controller-sa-${lower(var.env)}"
   assume_role_policy    = data.aws_iam_policy_document.aws_alb_ingress_controller_role_policy.json
   force_detach_policies = true
-  tags                  = merge(local.tags, tomap({ Name = "${var.cluster_name}-aws-lb-controller-sa" }))
+  tags                  = { Name = "${var.cluster_name}-aws-lb-controller-sa-${lower(var.env)}" }
 }
 
 resource "aws_iam_role_policy" "aws_lb_controller" {

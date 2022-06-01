@@ -68,8 +68,8 @@
 | <a name="input_owner"></a> [owner](#input\_owner) | Owner of the Application/Project used in tags. | `string` | n/a | yes |
 | <a name="input_public_zones"></a> [public\_zones](#input\_public\_zones) | Map of Route53 zone parameters. | `map(any)` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Name of the AWS Region for Deployment. | `string` | n/a | yes |
-| <a name="input_s3_irsa"></a> [s3\_irsa](#input\_s3\_irsa) | Specifies namespace and service-account name for S3 IRSA | `map` | n/a | yes |
-| <a name="input_stacks_dotnet_irsa"></a> [stacks\_dotnet\_irsa](#input\_stacks\_dotnet\_irsa) | Specifies namespace and service-account name for stacks-dotnet IRSA | `map` | n/a | yes |
+| <a name="input_s3_irsa"></a> [s3\_irsa](#input\_s3\_irsa) | Specifies namespace and service-account name for S3 IRSA | `map(any)` | n/a | yes |
+| <a name="input_stacks_dotnet_irsa"></a> [stacks\_dotnet\_irsa](#input\_stacks\_dotnet\_irsa) | Specifies namespace and service-account name for stacks-dotnet IRSA | `map(any)` | n/a | yes |
 
 ## Outputs
 

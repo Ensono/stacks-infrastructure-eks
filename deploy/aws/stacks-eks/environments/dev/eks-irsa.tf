@@ -65,9 +65,12 @@ data "aws_iam_policy_document" "s3" {
   }
 }
 
+
 module "s3_irsa" {
 
   source                = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa"
+  count                 = var.stacks_dotnet_irsa["create"] ? 1 : 0
+  
   enable_irsa           = var.s3_irsa["create"]
   namespace             = var.s3_irsa["namespace"]
   serviceaccount        = var.s3_irsa["service-account-name"]
@@ -79,8 +82,11 @@ module "s3_irsa" {
 }
 
 module "stacks_dotnet_irsa" {
+  
 
   source                = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa"
+  count                 = var.stacks_dotnet_irsa["create"] ? 1 : 0  
+  
   enable_irsa           = var.stacks_dotnet_irsa["create"]
   namespace             = var.stacks_dotnet_irsa["namespace"]
   serviceaccount        = var.stacks_dotnet_irsa["service-account-name"]
