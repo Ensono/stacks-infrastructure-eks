@@ -27,10 +27,10 @@ data "aws_iam_policy_document" "external_dns_role_policy" {
 
 # IAM Role for external DNS
 resource "aws_iam_role" "external_dns" {
-  name                  = "${var.cluster_name}-external-dns-sa"
+  name                  = "${var.cluster_name}-external-dns-sa-${lower(var.env)}"
   assume_role_policy    = data.aws_iam_policy_document.external_dns_role_policy.json
   force_detach_policies = true
-  tags                  = merge(local.tags, tomap({ name = "${var.cluster_name}-external-dns-sa" }))
+  tags                  = { name = "${var.cluster_name}-external-dns-sa-${lower(var.env)}" }
 }
 
 # IAM policy for aws-alb-ingress-controller role

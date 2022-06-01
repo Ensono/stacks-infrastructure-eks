@@ -34,16 +34,17 @@ map_users = [
     groups   = ["system:masters"]
   },
   {
-    userarn  = "arn:aws:iam::316154162729:user/darren.smallwood@amido.com"
-    username = "darren.smallwood@amido.com"
-    groups   = ["system:masters"]
-  },
-  {
     userarn  = "arn:aws:iam::316154162729:user/terraform"
     username = "terraform"
     groups   = ["system:masters"]
   }
 ]
+
+map_roles = [{
+  rolearn  = "arn:aws:iam::316154162729:role/eks-admin-role"
+  username = "eks-admin-role"
+  groups   = ["system:masters"]
+}]
 
 ########################################
 # DNS Configuration
@@ -51,10 +52,11 @@ map_users = [
 
 dns_hostedzone_name = "nonprodaws.amidostacks.com"
 
-enable_zone = true
+enable_zone = false #In Amido's case while deployment "nonprodaws.amidostacks.com" exist and delegates traffic to the root domain "amidostacks.com" in root account
+
 public_zones = {
-  "test.amido.com" = {
-    comment = "This is a sample hosted zone don't use in production or any deployment purpose"
+  "nonprodaws.amidostacks.com" = {
+    comment = "This hosted zone serves non-production traffic"
   }
 }
 
@@ -66,7 +68,7 @@ s3_irsa = {
   namespace            = "default",
   service-account-name = "access-s3-only"
 }
-
+# It it's true, this will fail initially as there will be no name-space nonprod-dev-netcore-api-cqrs present while creating the cluster.
 stacks_dotnet_irsa = {
   create               = true
   namespace            = "nonprod-dev-netcore-api-cqrs",
