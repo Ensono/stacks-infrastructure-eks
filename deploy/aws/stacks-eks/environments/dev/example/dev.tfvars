@@ -15,7 +15,7 @@ cluster_version                 = "1.21"
 enable_irsa                     = true
 cluster_endpoint_private_access = false
 cluster_endpoint_public_access  = true
-eks_desired_nodes               = 2
+eks_desired_nodes               = 3
 
 map_users = [
   {
