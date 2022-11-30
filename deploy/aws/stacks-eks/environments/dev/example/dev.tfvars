@@ -11,7 +11,7 @@ owner    = "Terraform"
 ########################################
 
 cluster_name                    = "amido-stacks"
-cluster_version                 = "1.21"
+cluster_version                 = "1.24"
 enable_irsa                     = true
 cluster_endpoint_private_access = false
 cluster_endpoint_public_access  = true
