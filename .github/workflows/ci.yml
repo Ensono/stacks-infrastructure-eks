@@ -1,0 +1,110 @@
+name: air.stacks-infrastructure-eks
+
+on:
+  push:
+    paths:
+      - 'build/github/**'
+      - 'src/**'
+      - 'deploy/aws/**' # TODO: Review this as new cloud provider targets are used
+      - 'deploy/k8s/aws/**'  # TODO: Review this as new cloud provider targets are used
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches:
+        - master
+        - main
+
+env:
+  # The following SECRETS are required in your GH Repository:
+  #   PACT_BEARER_TOKEN
+  #   SONAR_TOKEN
+  # The following SECRETS must be defined per environment (which must match environment key) in your GH Repository:
+  #   AWS_ACCESS_KEY_ID
+  #   AWS_ACCOUNT_ID
+  #   AWS_DEFAULT_REGION
+  #   AWS_SECRET_ACCESS_KEY
+  #   AWS_TF_STATE_BUCKET
+  #   AWS_TF_STATE_DYNAMOTABLE
+  #   AWS_TF_STATE_ENCRYPTION
+  #   AWS_TF_STATE_KEY
+  #   AWS_TF_STATE_REGION
+  CLOUD_PROVIDER: "aws"
+  TaskctlVersion: '1.4.2'
+  COMPANY: "ensono"
+  PROJECT: "stacks"
+  COMPONENT: "eks"
+  REGION: "eu-west-2"
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  TF_FILE_LOCATION: deploy/aws/stacks-eks
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./build/github/templates/install-taskctl
+      - run: taskctl lint
+        env:
+          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
+
+  InfraDev:
+    if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main'
+    needs: Lint
+    runs-on: ubuntu-latest
+    environment: nonprod
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./build/github/templates/install-taskctl
+      - run: taskctl infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
+        env:
+          ENV_NAME: nonprod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Terraform Backend Configuration
+          AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
+          AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
+          AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
+          AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
+          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          # Terraform Resource Configuration
+          TF_VAR_name_environment: "nonprod"
+          TF_VAR_name_company: ${{ env.COMPANY }}
+          TF_VAR_name_project: ${{ env.PROJECT }}
+          TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_region: ${{ env.REGION }}
+          #  TF_VAR_dns_hostedzone_name: "nonprodaws.amidostacks.com"
+
+  InfraProd:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./build/github/templates/install-taskctl
+      - run: taskctl infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
+        env:
+          ENV_NAME: prod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Terraform Backend Configuration
+          AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
+          AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
+          AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
+          AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
+          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          # Terraform Resource Configuration
+          TF_VAR_name_environment: "prod"
+          TF_VAR_name_company: ${{ env.COMPANY }}
+          TF_VAR_name_project: ${{ env.PROJECT }}
+          TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_region: ${{ env.REGION }}
+          #  TF_VAR_dns_hostedzone_name: "prodaws.amidostacks.com"

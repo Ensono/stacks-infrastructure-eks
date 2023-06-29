@@ -4,18 +4,17 @@
 
 # Naming convention
 module "default_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
-  namespace  = format("%s-%s", var.name_company, var.name_project)
-  stage      = var.name_environment
-  name       = "${lookup(var.location_name_map, var.resource_group_location, "eu-west-2")}-${var.name_component}"
-  attributes = var.attributes
-  delimiter  = "-"
-  tags       = local.tags
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
+  namespace   = format("%s-%s", var.name_company, var.name_project)
+  environment = var.name_environment
+  name        = "${lookup(var.location_name_map, var.resource_group_location, "eu-west-2")}-${var.name_component}"
+  delimiter   = "-"
+  tags        = local.tags
 }
 
 
 module "amido_stacks_infra" {
-  source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks"
+  source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v1.5.5"
 
   # Deployment Region
   region = var.region

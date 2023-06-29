@@ -3,7 +3,6 @@
 # https://www.terraform.io/docs/providers/aws/
 ########################################
 provider "aws" {
-  region = var.region
 
   default_tags {
     tags = local.default_tags
@@ -62,10 +61,14 @@ terraform {
       version = "~> 3.2"
     }
 
-    # kubernetes = {
-    #   source  = "hashicorp/kubernetes"
-    #   version = ">= 2.0.1"
-    # }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.10"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.21"
+    }
   }
 
 }
