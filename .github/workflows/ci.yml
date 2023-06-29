@@ -80,7 +80,7 @@ jobs:
 
   InfraProd:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-    needs: build
+    needs: Lint
     runs-on: ubuntu-latest
     environment: prod
     steps:
