@@ -27,10 +27,10 @@ data "aws_iam_policy_document" "external_dns_role_policy" {
 
 # IAM Role for external DNS
 resource "aws_iam_role" "external_dns" {
-  name                  = "${var.cluster_name}-external-dns-sa-${lower(var.env)}"
+  name                  = "${var.cluster_name}-external-dns-sa-${lower(var.name_environment)}"
   assume_role_policy    = data.aws_iam_policy_document.external_dns_role_policy.json
   force_detach_policies = true
-  tags                  = { name = "${var.cluster_name}-external-dns-sa-${lower(var.env)}" }
+  tags                  = { name = "${var.cluster_name}-external-dns-sa-${lower(var.name_environment)}" }
 }
 
 # IAM policy for aws-alb-ingress-controller role

@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: terraform
+    directory: "/deploy/aws/stacks-eks"
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/London
+    open-pull-requests-limit: 10
+    rebase-strategy: disabled

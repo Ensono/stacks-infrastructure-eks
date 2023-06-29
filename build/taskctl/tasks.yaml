@@ -1,0 +1,82 @@
+tasks:
+
+  buildnumber:
+    context: powershell
+    description: Update the build number
+    command:
+      - Update-BuildNumber
+
+  lint:yaml:
+    context: powershell-python
+    description: Perform YAML linting
+    command:
+      - Invoke-YamlLint
+
+  lint:terraform:format:
+    context: powershell
+    description: Perform Terraform format check
+    command:
+      - Invoke-Terraform -Format -Path $env:TF_FILE_LOCATION
+
+  lint:terraform:validate:
+    context: powershell
+    description: Perform Terraform validation
+    command:
+      - Invoke-Terraform -Validate -Path $env:TF_FILE_LOCATION
+
+  # Infrastructure tasks
+  infra:init:
+    context: powershell
+    description: Initialise Terraform for Azure
+    command:
+      - Invoke-Terraform -Init -backend "$env:TF_BACKEND_ARGS" -Path $env:TF_FILE_LOCATION -Debug
+      - Invoke-Terraform -Workspace -Arguments $env:ENV_NAME -Path $env:TF_FILE_LOCATION -Debug
+
+  infra:plan:
+    context: powershell
+    description: Plan Terraform
+    command:
+      - Invoke-Terraform -Plan -Path $env:TF_FILE_LOCATION -Arguments "-input=false","-out=tfplan" -Debug
+
+  infra:apply:
+    context: powershell
+    description: Apply Terraform Plan
+    command:
+      - Push-Location $env:TF_FILE_LOCATION && Invoke-Terraform -Apply -Path tfplan -Debug
+
+  # publish:github:
+  #   context: powershell
+  #   description: Publish Release to GitHub
+  #   command:
+  #     - Publish-GitHubRelease -artifactsList "$env:ARTIFACTS_LIST"
+  #   env:
+  #     generateReleaseNotes: $true
+  #     #  PUBLISH_RELEASE: $true
+
+  # update:dashboard:
+  #   context: powershell
+  #   description: Update the Deployment Dashboard
+  #   command:
+  #     - Update-InfluxDashboard
+  #   # env:
+  #   #  PUBLISH_RELEASE: $true
+
+
+  # debug:env:
+  #   context: powershell
+  #   description: Debugging task to show the environment variables in the container
+  #   command:
+  #     - dir env:/
+
+  # debug:location:
+  #   context: powershell
+  #   command:
+  #     - Write-Host "***** DEBUG *****" && get-childitem -filter "*opencover.xml" -recurse
+
+  # debug:sleep:
+  #   context: powershell
+  #   command:
+  #     - echo "Sleeping for {{ .sleep }}"
+  #     - sleep {{ .sleep }}
+  #   variables:
+  #     sleep: 30

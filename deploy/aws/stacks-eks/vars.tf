@@ -3,32 +3,23 @@
 ############################################
 
 variable "name_company" {
-  type = string
+  type    = string
   default = "ensono"
 }
 
 variable "name_project" {
-  type = string
+  type    = string
   default = "stacks"
 }
 
 variable "name_component" {
-  type = string
-  default = ""
+  type    = string
+  default = "compute"
 }
 
 variable "name_environment" {
-  type = string
+  type    = string
   default = "nonprod"
-}
-
-variable "attributes" {
-  default = []
-}
-
-variable "tags" {
-  type    = map(string)
-  default = {}
 }
 
 # Each region must have corresponding a shortend name for resource naming purposes
@@ -36,9 +27,9 @@ variable "location_name_map" {
   type = map(string)
 
   default = {
-    eu-west-2   = "euw2"
-    eu-west-1    = "euw1"
-    eu-west-3       = "euw3"
+    eu-west-2 = "ew2"
+    eu-west-1 = "ew1"
+    eu-west-3 = "ew3"
   }
 }
 
@@ -46,7 +37,7 @@ variable "region" {
 
   description = "Name of the AWS Region for Deployment."
   type        = string
-  default = "eu-west-2"
+  default     = "eu-west-2"
 }
 
 ########################################
@@ -64,28 +55,28 @@ variable "enable_irsa" {
 
   description = "Switch to enable IRSA."
   type        = bool
-  default = true
+  default     = true
 }
 
 variable "cluster_endpoint_private_access" {
 
   description = "Switch to enable private access."
   type        = bool
-  default = false
+  default     = false
 }
 
 variable "cluster_endpoint_public_access" {
 
   description = "Switch to enable public access."
   type        = bool
-  default = true
+  default     = true
 }
 
 variable "eks_desired_nodes" {
 
   description = "Configure desired no of nodes for the cluster."
   type        = string
-  default = 2
+  default     = 2
 }
 
 variable "map_users" {
@@ -118,22 +109,22 @@ variable "map_roles" {
 variable "dns_hostedzone_name" {
   description = "Name of the hosted-zone in Route53."
   type        = string
-  default = "nonprodaws.amidostacks.com"
+  default     = "nonprodaws.amidostacks.com"
 }
 variable "enable_zone" {
   description = "Conditionally create route53 zones."
   type        = bool
-  default = false
+  default     = false
 }
 
 variable "public_zones" {
   type        = map(any)
   description = "Map of Route53 zone parameters."
   default = {
-  "nonprodaws.amidostacks.com" = {
-    comment = "This hosted zone serves non-production traffic"
+    "nonprodaws.amidostacks.com" = {
+      comment = "This hosted zone serves non-production traffic"
+    }
   }
-}
 }
 
 variable "log_retention_period" {
