@@ -34,7 +34,6 @@ resource "aws_iam_role" "aws_lb_controller" {
 resource "aws_iam_role_policy" "aws_lb_controller" {
   name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
   role = aws_iam_role.aws_lb_controller.id
-  tags                  = local.default_tags
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -354,7 +353,7 @@ resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
 }
 
 resource "helm_release" "aws_load_balancer_controller" {
-  name       = "${mmodule.amido_stacks_infra.cluster_name}-helm-lb"
+  name       = "${module.amido_stacks_infra.cluster_name}-helm-lb"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"

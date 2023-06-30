@@ -37,7 +37,6 @@ resource "aws_iam_role" "external_dns" {
 resource "aws_iam_role_policy" "external_dns" {
   name = "${module.amido_stacks_infra.cluster_name}-rolepolicy-dns"
   role = aws_iam_role.external_dns.id
-  tags                  = local.default_tags
 
   policy = <<EOF
 {
@@ -199,7 +198,7 @@ resource "kubernetes_deployment" "external_dns" {
             "--registry=txt",
             "--txt-prefix=prefix",
             "--policy=sync",
-            "--txt-owner-id=${var.cluster_name}-external-dns" # Can add env for reference
+            "--txt-owner-id=${module.amido_stacks_infra.cluster_name}-kube-dns"
           ]
         }
         service_account_name = kubernetes_service_account.external_dns.metadata[0].name
