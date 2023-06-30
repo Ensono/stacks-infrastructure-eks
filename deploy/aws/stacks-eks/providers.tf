@@ -2,12 +2,7 @@
 # Provider to connect to AWS
 # https://www.terraform.io/docs/providers/aws/
 ########################################
-provider "aws" {
-
-  default_tags {
-    tags = local.default_tags
-  }
-}
+provider "aws" {}
 
 provider "kubernetes" {
 
