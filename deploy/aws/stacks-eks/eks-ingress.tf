@@ -25,16 +25,16 @@ data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
 }
 
 resource "aws_iam_role" "aws_lb_controller" {
-  name                  = "${var.cluster_name}-aws-lb-controller-sa-${lower(var.name_environment)}"
+  name                  = "${module.amido_stacks_infra.cluster_name}-role-lb"
   assume_role_policy    = data.aws_iam_policy_document.aws_alb_ingress_controller_role_policy.json
   force_detach_policies = true
-  tags                  = { Name = "${var.cluster_name}-aws-lb-controller-sa-${lower(var.name_environment)}" }
+  tags                  = local.default_tags
 }
 
 resource "aws_iam_role_policy" "aws_lb_controller" {
-  name = "${var.cluster_name}-aws-lb-controller-sa"
+  name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
   role = aws_iam_role.aws_lb_controller.id
-
+  tags                  = local.default_tags
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -254,13 +254,13 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
 
   automount_service_account_token = true
   metadata {
-    name      = "aws-load-balancer-controller"
+    name      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
     namespace = "kube-system"
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
     }
     labels = {
-      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+      "app.kubernetes.io/name"      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
       "app.kubernetes.io/version"   = "2.2.1"
       "app.kubernetes.io/component" = "controller"
     }
@@ -271,10 +271,10 @@ resource "kubernetes_cluster_role" "aws_load_balancer_controller" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name = "aws-load-balancer-controller"
+    name = "${module.amido_stacks_infra.cluster_name}-role-lb"
 
     labels = {
-      "app.kubernetes.io/name"    = "aws-load-balancer-controller"
+      "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-role-lb"
       "app.kubernetes.io/version" = "2.2.1"
     }
   }
@@ -331,10 +331,10 @@ resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name = "aws-load-balancer-controller"
+    name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
 
     labels = {
-      "app.kubernetes.io/name"    = "aws-lb-controller"
+      "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
       "app.kubernetes.io/version" = "2.2.1"
     }
   }
@@ -354,14 +354,14 @@ resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
 }
 
 resource "helm_release" "aws_load_balancer_controller" {
-  name       = "aws-load-balancer-controller"
+  name       = "${mmodule.amido_stacks_infra.cluster_name}-helm-lb"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
 
   set {
     name  = "clusterName"
-    value = module.amido_stacks_infra.cluster_id
+    value = module.amido_stacks_infra.cluster_name
   }
 
   set {

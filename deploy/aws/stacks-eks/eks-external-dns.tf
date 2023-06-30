@@ -27,16 +27,17 @@ data "aws_iam_policy_document" "external_dns_role_policy" {
 
 # IAM Role for external DNS
 resource "aws_iam_role" "external_dns" {
-  name                  = "${var.cluster_name}-external-dns-sa-${lower(var.name_environment)}"
+  name                  = "${module.amido_stacks_infra.cluster_name}-role-dns"
   assume_role_policy    = data.aws_iam_policy_document.external_dns_role_policy.json
   force_detach_policies = true
-  tags                  = { name = "${var.cluster_name}-external-dns-sa-${lower(var.name_environment)}" }
+  tags                  = local.default_tags
 }
 
 # IAM policy for aws-alb-ingress-controller role
 resource "aws_iam_role_policy" "external_dns" {
-  name = "${var.cluster_name}-external-dns-sa"
+  name = "${module.amido_stacks_infra.cluster_name}-rolepolicy-dns"
   role = aws_iam_role.external_dns.id
+  tags                  = local.default_tags
 
   policy = <<EOF
 {
@@ -76,7 +77,7 @@ resource "kubernetes_service_account" "external_dns" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.external_dns.arn
     }
     labels = {
-      "app.kubernetes.io/name" = "external-dns"
+      "app.kubernetes.io/name" = "${module.amido_stacks_infra.cluster_name}-sa-dns"
     }
   }
 }
@@ -85,9 +86,9 @@ resource "kubernetes_cluster_role" "external_dns" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name = "external-dns"
+    name = "${module.amido_stacks_infra.cluster_name}-role-dns"
     labels = {
-      "app.kubernetes.io/name" = "external-dns"
+      "app.kubernetes.io/name" = "${module.amido_stacks_infra.cluster_name}-role-dns"
     }
   }
 
@@ -142,9 +143,9 @@ resource "kubernetes_cluster_role_binding" "external_dns" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name = "external-dns"
+    name = "${module.amido_stacks_infra.cluster_name}-rolebind-dns"
     labels = {
-      "app.kubernetes.io/name" = "external-dns"
+      "app.kubernetes.io/name" = "${module.amido_stacks_infra.cluster_name}-rolebind-dns"
     }
   }
 
@@ -167,7 +168,7 @@ resource "kubernetes_deployment" "external_dns" {
   depends_on = [module.amido_stacks_infra]
 
   metadata {
-    name      = "external-dns"
+    name      = "${module.amido_stacks_infra.cluster_name}-kube-dns"
     namespace = "kube-system"
   }
 
