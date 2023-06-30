@@ -14,7 +14,8 @@ module "default_label" {
 
 
 module "amido_stacks_infra" {
-  source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v1.5.5"
+  source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=featuer/togglenaming"
+  # source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v1.5.5"
 
   # Deployment Region
   region = var.region
