@@ -79,27 +79,27 @@ variable "eks_desired_nodes" {
   default     = 2
 }
 
-variable "map_users" {
+# variable "map_users" {
 
-  default     = []
-  description = "Additional IAM users to add to the aws-auth configmap."
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-}
+#   default     = []
+#   description = "Additional IAM users to add to the aws-auth configmap."
+#   type = list(object({
+#     userarn  = string
+#     username = string
+#     groups   = list(string)
+#   }))
+# }
 
-variable "map_roles" {
+# variable "map_roles" {
 
-  default     = []
-  description = "Additional IAM roles to add to the aws-auth configmap."
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-}
+#   default     = []
+#   description = "Additional IAM roles to add to the aws-auth configmap."
+#   type = list(object({
+#     rolearn  = string
+#     username = string
+#     groups   = list(string)
+#   }))
+# }
 
 ########################################
 # DNS Configuration
