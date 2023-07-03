@@ -9,7 +9,7 @@ module "default_label" {
   environment = var.name_environment
   name        = "${lookup(var.location_name_map, var.region, "eu-west-2")}-${var.name_component}"
   delimiter   = "-"
-  tags        = local.tags
+  tags        = local.default_tags
 }
 
 
