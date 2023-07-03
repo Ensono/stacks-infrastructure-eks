@@ -34,8 +34,8 @@ module "amido_stacks_infra" {
 
 
   # Provides EKS API Access to Additional IAM Users and Roles, default Admin access is provided only to the cluster creator identity
-  map_roles = var.map_roles
-  map_users = var.map_users
+  # map_roles = var.map_roles
+  # map_users = var.map_users
 
   # Pass Non-default Tag Values to Underlying Modules
   tags = local.tags
