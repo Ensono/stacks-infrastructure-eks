@@ -64,6 +64,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.21"
     }
+    http = {
+      source = "terraform-aws-modules/http"
+      version = "~> 2.4"
+    }
   }
 
 }
