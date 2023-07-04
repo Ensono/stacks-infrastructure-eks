@@ -38,5 +38,5 @@ module "amido_stacks_infra" {
   # map_users = var.map_users
 
   # Pass Non-default Tag Values to Underlying Modules
-  tags = local.tags
+  tags = local.default_tags
 }
