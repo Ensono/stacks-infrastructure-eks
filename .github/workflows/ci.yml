@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'build/github/**'
+      - 'build/taskctl/**'
       - 'src/**'
       - 'deploy/aws/**' # TODO: Review this as new cloud provider targets are used
       - 'deploy/k8s/aws/**'  # TODO: Review this as new cloud provider targets are used
