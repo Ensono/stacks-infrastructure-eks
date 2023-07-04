@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl lint -d
+      - run: taskctl -d lint
         env:
           TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
 
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl infrastructure -d # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      - run: taskctl -d infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
         env:
           ENV_NAME: nonprod
           # AWS Environmental Config
@@ -86,7 +86,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl infrastructure -d # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      - run: taskctl -d infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
         env:
           ENV_NAME: prod
           # AWS Environmental Config
