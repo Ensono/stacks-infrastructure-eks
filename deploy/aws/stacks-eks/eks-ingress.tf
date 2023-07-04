@@ -32,8 +32,8 @@ resource "aws_iam_role" "aws_lb_controller" {
 }
 
 resource "aws_iam_role_policy" "aws_lb_controller" {
-  name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
-  role = aws_iam_role.aws_lb_controller.id
+  name   = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
+  role   = aws_iam_role.aws_lb_controller.id
   policy = <<EOF
 {
     "Version": "2012-10-17",
