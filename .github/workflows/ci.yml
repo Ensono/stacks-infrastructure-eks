@@ -77,8 +77,8 @@ jobs:
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
           TF_VAR_region: ${{ env.REGION }}
-          #  TF_VAR_dns_hostedzone_name: "nonprodaws.amidostacks.com"
-
+          TF_VAR_dns_hostedzone_name: "nonprodaws.amidostacks.com"
+          TF_VAR_enable_zone: true
   InfraProd:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     needs: Lint
@@ -108,4 +108,5 @@ jobs:
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
           TF_VAR_region: ${{ env.REGION }}
-          #  TF_VAR_dns_hostedzone_name: "prodaws.amidostacks.com"
+          TF_VAR_dns_hostedzone_name: "prodaws.amidostacks.com"
+          TF_VAR_enable_zone: true
