@@ -43,7 +43,7 @@
    ***If you do the setup via this way remember to toggle off the hosted-zone creation via infrastructure code in main.tf file.***
 
    
-   # How to generate SSL Certificate for the Stacks Infra ?
+   # How to generate SSL Certificate for the Stacks Infra:
 
 
    Once you are ready with the domain and subdomain, you can proceed to request or import a TLS/SSL certificate from the AWS Certificate Manager.
