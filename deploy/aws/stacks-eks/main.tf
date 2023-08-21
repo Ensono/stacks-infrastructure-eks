@@ -32,10 +32,10 @@ module "amido_stacks_infra" {
   enable_zone  = var.enable_zone
   public_zones = var.public_zones
 
-
   # Provides EKS API Access to Additional IAM Users and Roles, default Admin access is provided only to the cluster creator identity
   # map_roles = var.map_roles
-  # map_users = var.map_users
+  manage_aws_auth_configmap = var.manage_aws_auth_configmap
+  map_users                 = var.map_users
 
   # Pass Non-default Tag Values to Underlying Modules
   tags = local.default_tags

@@ -79,16 +79,28 @@ variable "eks_desired_nodes" {
   default     = 2
 }
 
-# variable "map_users" {
+variable "map_users" {
 
-#   default     = []
-#   description = "Additional IAM users to add to the aws-auth configmap."
-#   type = list(object({
-#     userarn  = string
-#     username = string
-#     groups   = list(string)
-#   }))
-# }
+  default     = [ {
+      userarn  = "arn:aws:iam::640853641954:user/kubeadmin"
+      username = "kubeadmin"
+      groups   = ["system:masters"]
+    }]
+  
+  description = "Additional IAM users to add to the aws-auth configmap."
+  
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+}
+
+variable "manage_aws_auth_configmap" {
+  
+  description = "Determines whether to manage the aws-auth configmap"
+  type        =  bool
+}
 
 # variable "map_roles" {
 
