@@ -48,12 +48,12 @@ output "cluster_oidc_issuer_url" {
 
 output "cluster_oidc_provider" {
   description = "OpenID Connect identity provider without leading http"
-  value = module.amido_stacks_infra.cluster_oidc_provider
+  value       = module.amido_stacks_infra.cluster_oidc_provider
 }
 
 output "cluster_oidc_provider_arn" {
   description = "OpenID Connect identity provider ARN"
-  value = module.amido_stacks_infra.cluster_oidc_provider_arn
+  value       = module.amido_stacks_infra.cluster_oidc_provider_arn
 }
 
 ################
