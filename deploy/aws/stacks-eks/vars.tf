@@ -55,7 +55,7 @@ variable "enable_irsa" {
 
   description = "Switch to enable IRSA."
   type        = bool
-  default     = false # Temporarily to validate configuration of ALB 
+  default     = true
 }
 
 variable "cluster_endpoint_private_access" {
