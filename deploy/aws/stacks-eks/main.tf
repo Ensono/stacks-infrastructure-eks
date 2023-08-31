@@ -27,7 +27,7 @@ module "amido_stacks_infra" {
   enable_irsa                     = var.enable_irsa
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
-  
+
   # Route-53 Zone Configuration
   enable_zone  = var.enable_zone
   public_zones = var.public_zones
