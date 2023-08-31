@@ -24,8 +24,7 @@ module "amido_stacks_infra" {
   cluster_name                    = module.default_label.id
   cluster_version                 = var.cluster_version
   eks_desired_nodes               = var.eks_desired_nodes
-  # TODO - OIDC details
-  enable_irsa                     = var.enable_irsa
+  enable_irsa                     = true  # var.enable_irsa
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
   
