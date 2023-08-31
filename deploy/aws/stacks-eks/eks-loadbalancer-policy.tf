@@ -1,3 +1,5 @@
+# NB: This needs to be applied to the node groups for the EKS cluster programmatically, currently manual.
+
 resource "aws_iam_policy" "policy" {
   name        = "aws-loadbalancer-controller"
   path        = "/"
