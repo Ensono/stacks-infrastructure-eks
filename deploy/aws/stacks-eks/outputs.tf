@@ -32,16 +32,28 @@ output "cluster_name" {
   value       = module.amido_stacks_infra.cluster_name
 }
 
+output "cluster_certificate_authority_data" {
+  description = "base64 encoded certificate data required to communicate with your cluster"
+  value       = module.amido_stacks_infra.cluster_certificate_authority_data
+}
+
+#######
+# OIDC 
+#######
 
 output "cluster_oidc_issuer_url" {
   description = "The URL on the EKS cluster for the OpenID Connect identity provider"
   value       = module.amido_stacks_infra.cluster_oidc_issuer_url
 }
 
+output "cluster_oidc_provider" {
+  description = "OpenID Connect identity provider without leading http"
+  value = module.amido_stacks_infra.cluster_oidc_provider
+}
 
-output "cluster_certificate_authority_data" {
-  description = "base64 encoded certificate data required to communicate with your cluster"
-  value       = module.amido_stacks_infra.cluster_certificate_authority_data
+output "cluster_oidc_provider_arn" {
+  description = "OpenID Connect identity provider ARN"
+  value = module.amido_stacks_infra.cluster_oidc_provider_arn
 }
 
 ################
