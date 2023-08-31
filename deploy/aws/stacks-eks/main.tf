@@ -24,10 +24,11 @@ module "amido_stacks_infra" {
   cluster_name                    = module.default_label.id
   cluster_version                 = var.cluster_version
   eks_desired_nodes               = var.eks_desired_nodes
+  # TODO - OIDC details
   enable_irsa                     = var.enable_irsa
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
-
+  
   # Route-53 Zone Configuration
   enable_zone  = var.enable_zone
   public_zones = var.public_zones
