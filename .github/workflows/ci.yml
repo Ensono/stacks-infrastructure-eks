@@ -77,7 +77,7 @@ jobs:
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
           TF_VAR_region: ${{ env.REGION }}
-          TF_VAR_dns_hostedzone_name: "nonprodaws.amidostacks.com"
+          TF_VAR_dns_hostedzone_name: "nonprod.aws.stacks.ensono.com"
           TF_VAR_enable_zone: true
           TF_VAR_manage_aws_auth_configmap: true 
 
@@ -110,5 +110,5 @@ jobs:
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
           TF_VAR_region: ${{ env.REGION }}
-          TF_VAR_dns_hostedzone_name: "prodaws.amidostacks.com"
+          TF_VAR_dns_hostedzone_name: "prod.aws.stacks.ensono.com"
           TF_VAR_enable_zone: true
