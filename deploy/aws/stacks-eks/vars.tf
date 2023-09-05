@@ -74,7 +74,7 @@ variable "cluster_endpoint_public_access" {
 
 variable "eks_desired_nodes" {
 
-  description = "Configure desired no of nodes for the cluster."
+  description = "Configure desired number of nodes for the cluster."
   type        = string
   default     = 2
 }
