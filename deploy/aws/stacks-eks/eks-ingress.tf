@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:${kubernetes_service_account.aws_load_balancer_controller.metadata[0].name}"]
+      values   = ["system:serviceaccount:kube-system:${module.amido_stacks_infra.cluster_name}-sa-lb"]
     }
   }
 }
