@@ -123,22 +123,8 @@ variable "dns_hostedzone_name" {
   type        = string
   default     = "nonprod.aws.stacks.ensono.com"
 }
-variable "enable_zone" {
-  description = "Conditionally create route53 zones."
-  type        = bool
-  default     = false
-}
 
-variable "public_zones" {
-  type        = map(any)
-  description = "Map of Route53 zone parameters."
-  # TODO: this needs to be converted to a local to take the dns_hostedzone_name var
-  default = {
-    "nonprod.aws.stacks.ensono.com" = {
-      comment = "This hosted zone serves non-production traffic"
-    }
-  }
-}
+
 
 variable "log_retention_period" {
   type        = string
