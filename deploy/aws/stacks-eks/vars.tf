@@ -79,6 +79,13 @@ variable "eks_desired_nodes" {
   default     = 2
 }
 
+variable "eks_node_size" {
+
+  description = "Configure desired spec of nodes for the cluster."
+  type        = string
+  default     = "t3.small"
+}
+
 variable "map_users" {
 
   default = [{
