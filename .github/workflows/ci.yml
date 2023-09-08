@@ -39,6 +39,8 @@ env:
   CLOUD_PLATFORM: "aws"
   NON_PROD_BASE_DOMAIN_NAME: "nonprod.aws.stacks.ensono.com"
   PROD_BASE_DOMAIN_NAME: "prod.aws.stacks.ensono.com"
+  EXTERNAL_DNS_NAMESPACE: "external-dns"
+  EXTERNAL_DNS_SERVICE_ACCOUNT_NAME: "external-dns"
 
 jobs:
   Lint:
@@ -83,6 +85,8 @@ jobs:
           TF_VAR_dns_hostedzone_name: "${{ env.NON_PROD_BASE_DOMAIN_NAME }}"
           TF_VAR_enable_zone: true
           TF_VAR_manage_aws_auth_configmap: true
+          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
+          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
 
   InfraProd:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
@@ -115,3 +119,5 @@ jobs:
           TF_VAR_region: ${{ env.REGION }}
           TF_VAR_dns_hostedzone_name: "${{ env.PROD_BASE_DOMAIN_NAME }}"
           TF_VAR_enable_zone: true
+          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
+          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"

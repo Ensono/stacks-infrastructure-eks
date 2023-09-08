@@ -1,6 +1,6 @@
 charts:
   - name: external-dns
-    namespace: external-dns
+    namespace: ${env:EXTERNAL_DNS_NAMESPACE}
     location: external-dns
     enabled: true
     repo: https://kubernetes-sigs.github.io/external-dns/
