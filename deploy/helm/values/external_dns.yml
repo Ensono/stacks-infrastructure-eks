@@ -1,0 +1,8 @@
+domainFilters:
+  - ${env:TF_VAR_dns_hostedzone_name}
+
+provider: ${env:CLOUD_PLATFORM}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "${env:TFOUT_EXTERNAL_DNS_ROLE_ARN}"

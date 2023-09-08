@@ -13,14 +13,14 @@ data "aws_iam_policy_document" "external_dns_assume_role_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:aud"
-      values   = ["sts.amazonaws.com"]
+      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:external-dns"]
     }
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:external-dns"]
+      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:aud"
+      values   = ["sts.amazonaws.com"]
     }
   }
 }
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "external_dns" {
 }
 
 resource "aws_iam_policy" "external_dns" {
-  name        = "${module.amido_stacks_infra.cluster_name}-rolepolicy-dns"
+  name        = "${module.amido_stacks_infra.cluster_name}-rolepolicy-external-dns"
   path        = "/"
   description = "Permissions for external-dns to list zones and records and update the records"
 
