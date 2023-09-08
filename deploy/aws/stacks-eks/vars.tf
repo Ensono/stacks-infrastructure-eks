@@ -138,3 +138,21 @@ variable "log_retention_period" {
   description = "Specifies the number of days you want to retain log events in the specified log group"
   default     = 180
 }
+
+###############
+# External DNS
+###############
+variable "external_dns_enabled" {
+  type        = bool
+  description = "Whether to enable External DNS or not"
+}
+
+variable "external_dns_service_account_name" {
+  type        = string
+  description = "The Kubernetes Service Account name for External DNS"
+}
+
+variable "external_dns_namespace" {
+  type        = string
+  description = "The Namespace that External DNS will be deployed to"
+}
