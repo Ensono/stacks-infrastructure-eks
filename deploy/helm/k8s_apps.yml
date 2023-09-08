@@ -1,0 +1,7 @@
+charts:
+  - name: external-dns
+    namespace: external-dns
+    location: external-dns
+    enabled: true
+    repo: https://kubernetes-sigs.github.io/external-dns/
+    values_template: deploy/helm/values/external_dns.yml

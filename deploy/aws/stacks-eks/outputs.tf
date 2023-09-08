@@ -38,7 +38,7 @@ output "cluster_certificate_authority_data" {
 }
 
 #######
-# OIDC 
+# OIDC
 #######
 
 output "cluster_oidc_issuer_url" {
@@ -58,8 +58,16 @@ output "cluster_oidc_provider_arn" {
 
 ##############
 # Cloud Watch
-###############
+##############
 output "cloudwatch_log_group_arn" {
   description = "ARN of the cloudwatch log group."
   value       = aws_cloudwatch_log_group.amido_stacks_eks.arn
+}
+
+###############
+# External DNS
+###############
+output "external_dns_role_arn" {
+  description = "The ARN of the AWS Role created for External DNS to use"
+  value       = aws_iam_role.external_dns.arn
 }
