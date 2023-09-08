@@ -53,8 +53,21 @@ if (!(Test-Path -Path $tempdir)) {
     New-Item -Type Directory -Path $tempdir | Out-Null
 }
 
-# Read in the configuration
-$helm = Get-Content -Path $path -Raw | ConvertFrom-Yaml
+# Read in the configuration, replacing parameters as necessary
+$template_name = Split-Path -Path $path -Leaf
+$target = [IO.Path]::Join($tempdir, $template_name)
+
+# Expand the template for the values
+$template = Get-Content -Path $path -Raw
+if ([String]::IsNullOrEmpty($template)) {
+    New-Item -Type File -Path $target -Force | Out-Null
+} else {
+    Expand-Template -Template $template -Target $target
+}
+
+$helm = Get-Content -Path $target -Raw | ConvertFrom-Yaml
+
+Write-Host $(Get-Content -Path $target -Raw)
 
 # Iterate around all the charts in the object
 foreach ($chart in $helm.charts) {
