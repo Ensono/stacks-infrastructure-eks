@@ -41,34 +41,11 @@ terraform {
       version = "~> 4.0"
     }
 
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5"
-    }
-
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.4"
-    }
-
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.2"
-    }
-
+    # TODO: Remove me once the ingress has moved out of TF...
     helm = {
       source  = "hashicorp/helm"
       version = "~> 2.10"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.21"
-    }
-    http = {
-      source  = "terraform-aws-modules/http"
-      version = "~> 2.4"
-    }
   }
 
 }
-
