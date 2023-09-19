@@ -1,0 +1,6 @@
+
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "${env:TFOUT_aws_lb_controller_role_arn}"
+  name: "${env:AWS_LB_CONTROLLER_SERVICE_ACCOUNT_NAME}"
