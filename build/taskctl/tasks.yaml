@@ -54,7 +54,8 @@ tasks:
         Invoke-Terraform -Output -Path ${env:TF_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
         /app/build/scripts/Deploy-HelmCharts.ps1 /app/deploy/helm/k8s_apps.yml `
           -identifier ${env:REGION} `
-          -clustername ${env:TFOUT_cluster_name}
+          -clustername ${env:TFOUT_cluster_name} `
+          -provider ${env:CLOUD_PROVIDER}
 
   # publish:github:
   #   context: powershell

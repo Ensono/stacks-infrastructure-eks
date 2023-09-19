@@ -45,5 +45,7 @@ override.tf.json
 ehthumbs.db
 Thumbs.db
 
+# Taskctl Build
 envfile
 .env
+/tmp

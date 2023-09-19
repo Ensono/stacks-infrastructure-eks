@@ -6,4 +6,4 @@ provider: ${env:CLOUD_PLATFORM}
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: "${env:TFOUT_external_dns_role_arn}"
-  name: ${env:EXTERNAL_DNS_SERVICE_ACCOUNT_NAME}
+  name: "${env:EXTERNAL_DNS_SERVICE_ACCOUNT_NAME}"

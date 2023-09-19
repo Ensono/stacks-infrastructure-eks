@@ -36,9 +36,12 @@ env:
   REGION: "eu-west-2"
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   TF_FILE_LOCATION: deploy/aws/stacks-eks
-  CLOUD_PLATFORM: "aws"
   NON_PROD_BASE_DOMAIN_NAME: "nonprod.aws.stacks.ensono.com"
   PROD_BASE_DOMAIN_NAME: "prod.aws.stacks.ensono.com"
+  # AWS LB Controller Helm
+  AWS_LB_CONTROLLER_ENABLED: true
+  AWS_LB_CONTROLLER_NAMESPACE: "aws-lb-controller"
+  AWS_LB_CONTROLLER_SERVICE_ACCOUNT_NAME: "aws-lb-controller"
   # External DNS Helm
   EXTERNAL_DNS_ENABLED: true
   EXTERNAL_DNS_NAMESPACE: "external-dns"

@@ -17,7 +17,7 @@ param (
     $tempdir = "tmp/",
 
     [string]
-    # Cloud provider being targetted
+    # Cloud provider being targeted
     $provider = $env:CLOUD_PLATFORM,
 
     [string]

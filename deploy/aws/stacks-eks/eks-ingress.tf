@@ -12,14 +12,14 @@ data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:aud"
-      values   = ["sts.amazonaws.com"]
+      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:${module.amido_stacks_infra.cluster_name}-sa-lb"]
     }
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:${module.amido_stacks_infra.cluster_name}-sa-lb"]
+      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:aud"
+      values   = ["sts.amazonaws.com"]
     }
   }
 }
@@ -31,9 +31,14 @@ resource "aws_iam_role" "aws_lb_controller" {
   tags                  = local.default_tags
 }
 
-resource "aws_iam_role_policy" "aws_lb_controller" {
-  name   = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
-  role   = aws_iam_role.aws_lb_controller.id
+# NOTE: This policy comes from https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+# New versions should be checked and inserted below as upgrades to the Ingress Controller helm chart happen.
+# This is why this resource is a HEREDOC instead of the usual `aws_iam_policy_document` for easier copy and paste.
+resource "aws_iam_policy" "aws_lb_controller" {
+  name        = "rolepolicy-aws-lb-controller"
+  path        = "/${module.amido_stacks_infra.cluster_name}/"
+  description = "Permissions for aws-lb-controller to manage Load Balancers for Ingress resources and Services with the correct annotations."
+
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -41,12 +46,24 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
         {
             "Effect": "Allow",
             "Action": [
-                "iam:CreateServiceLinkedRole",
+                "iam:CreateServiceLinkedRole"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
                 "ec2:DescribeAvailabilityZones",
                 "ec2:DescribeInternetGateways",
                 "ec2:DescribeVpcs",
+                "ec2:DescribeVpcPeeringConnections",
                 "ec2:DescribeSubnets",
                 "ec2:DescribeSecurityGroups",
                 "ec2:DescribeInstances",
@@ -63,8 +80,7 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
                 "elasticloadbalancing:DescribeTargetGroups",
                 "elasticloadbalancing:DescribeTargetGroupAttributes",
                 "elasticloadbalancing:DescribeTargetHealth",
-                "elasticloadbalancing:DescribeTags",
-                "elasticloadbalancing:AddTags"
+                "elasticloadbalancing:DescribeTags"
             ],
             "Resource": "*"
         },
@@ -225,6 +241,28 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
         {
             "Effect": "Allow",
             "Action": [
+                "elasticloadbalancing:AddTags"
+            ],
+            "Resource": [
+                "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "elasticloadbalancing:CreateAction": [
+                        "CreateTargetGroup",
+                        "CreateLoadBalancer"
+                    ]
+                },
+                "Null": {
+                    "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "elasticloadbalancing:RegisterTargets",
                 "elasticloadbalancing:DeregisterTargets"
             ],
@@ -246,136 +284,141 @@ resource "aws_iam_role_policy" "aws_lb_controller" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
+  role       = aws_iam_role.aws_lb_controller.id
+  policy_arn = aws_iam_policy.aws_lb_controller.arn
+}
+
 # Kubernetes Objects: Service Account, Cluster Role and Cluster Role Binding
 
-resource "kubernetes_service_account" "aws_load_balancer_controller" {
-  depends_on = [module.amido_stacks_infra]
+# resource "kubernetes_service_account" "aws_load_balancer_controller" {
+#   depends_on = [module.amido_stacks_infra]
 
-  automount_service_account_token = true
-  metadata {
-    name      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
-    namespace = "kube-system"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
-    }
-    labels = {
-      "app.kubernetes.io/name"      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
-      "app.kubernetes.io/version"   = "2.2.1"
-      "app.kubernetes.io/component" = "controller"
-    }
-  }
-}
+#   automount_service_account_token = true
+#   metadata {
+#     name      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
+#     namespace = "kube-system"
+#     annotations = {
+#       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
+#     }
+#     labels = {
+#       "app.kubernetes.io/name"      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
+#       "app.kubernetes.io/version"   = "2.2.1"
+#       "app.kubernetes.io/component" = "controller"
+#     }
+#   }
+# }
 
-resource "kubernetes_cluster_role" "aws_load_balancer_controller" {
-  depends_on = [module.amido_stacks_infra]
+# resource "kubernetes_cluster_role" "aws_load_balancer_controller" {
+#   depends_on = [module.amido_stacks_infra]
 
-  metadata {
-    name = "${module.amido_stacks_infra.cluster_name}-role-lb"
+#   metadata {
+#     name = "${module.amido_stacks_infra.cluster_name}-role-lb"
 
-    labels = {
-      "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-role-lb"
-      "app.kubernetes.io/version" = "2.2.1"
-    }
-  }
+#     labels = {
+#       "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-role-lb"
+#       "app.kubernetes.io/version" = "2.2.1"
+#     }
+#   }
 
-  rule {
-    api_groups = [
-      "",
-      "extensions",
-    ]
+#   rule {
+#     api_groups = [
+#       "",
+#       "extensions",
+#     ]
 
-    resources = [
-      "configmaps",
-      "endpoints",
-      "events",
-      "ingresses",
-      "ingresses/status",
-      "services",
-      "pods/status"
-    ]
+#     resources = [
+#       "configmaps",
+#       "endpoints",
+#       "events",
+#       "ingresses",
+#       "ingresses/status",
+#       "services",
+#       "pods/status"
+#     ]
 
-    verbs = [
-      "create",
-      "get",
-      "list",
-      "update",
-      "watch",
-      "patch",
-    ]
-  }
+#     verbs = [
+#       "create",
+#       "get",
+#       "list",
+#       "update",
+#       "watch",
+#       "patch",
+#     ]
+#   }
 
-  rule {
-    api_groups = [
-      "",
-      "extensions",
-    ]
+#   rule {
+#     api_groups = [
+#       "",
+#       "extensions",
+#     ]
 
-    resources = [
-      "nodes",
-      "pods",
-      "secrets",
-      "services",
-      "namespaces",
-    ]
+#     resources = [
+#       "nodes",
+#       "pods",
+#       "secrets",
+#       "services",
+#       "namespaces",
+#     ]
 
-    verbs = [
-      "get",
-      "list",
-      "watch",
-    ]
-  }
-}
+#     verbs = [
+#       "get",
+#       "list",
+#       "watch",
+#     ]
+#   }
+# }
 
-resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
-  depends_on = [module.amido_stacks_infra]
+# resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
+#   depends_on = [module.amido_stacks_infra]
 
-  metadata {
-    name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
+#   metadata {
+#     name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
 
-    labels = {
-      "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
-      "app.kubernetes.io/version" = "2.2.1"
-    }
-  }
+#     labels = {
+#       "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
+#       "app.kubernetes.io/version" = "2.2.1"
+#     }
+#   }
 
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.aws_load_balancer_controller.metadata[0].name
-  }
+#   role_ref {
+#     api_group = "rbac.authorization.k8s.io"
+#     kind      = "ClusterRole"
+#     name      = kubernetes_cluster_role.aws_load_balancer_controller.metadata[0].name
+#   }
 
-  subject {
-    api_group = ""
-    kind      = "ServiceAccount"
-    name      = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
-    namespace = kubernetes_service_account.aws_load_balancer_controller.metadata[0].namespace
-  }
-}
+#   subject {
+#     api_group = ""
+#     kind      = "ServiceAccount"
+#     name      = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
+#     namespace = kubernetes_service_account.aws_load_balancer_controller.metadata[0].namespace
+#   }
+# }
 
-resource "helm_release" "aws_load_balancer_controller" {
-  name       = "${module.amido_stacks_infra.cluster_name}-helm-lb"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
+# resource "helm_release" "aws_load_balancer_controller" {
+#   name       = "${module.amido_stacks_infra.cluster_name}-helm-lb"
+#   repository = "https://aws.github.io/eks-charts"
+#   chart      = "aws-load-balancer-controller"
+#   namespace  = "kube-system"
 
-  set {
-    name  = "clusterName"
-    value = module.amido_stacks_infra.cluster_name
-  }
+#   set {
+#     name  = "clusterName"
+#     value = module.amido_stacks_infra.cluster_name
+#   }
 
-  set {
-    name  = "serviceAccount.create"
-    value = false
-  }
+#   set {
+#     name  = "serviceAccount.create"
+#     value = false
+#   }
 
-  set {
-    name  = "serviceAccount.name"
-    value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
-  }
+#   set {
+#     name  = "serviceAccount.name"
+#     value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
+#   }
 
-  set {
-    name  = "replicaCount"
-    value = "1"
-  }
+#   set {
+#     name  = "replicaCount"
+#     value = "1"
+#   }
 
-}
+# }

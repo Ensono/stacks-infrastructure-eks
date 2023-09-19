@@ -64,6 +64,14 @@ output "cloudwatch_log_group_arn" {
   value       = aws_cloudwatch_log_group.amido_stacks_eks.arn
 }
 
+###############################
+# AWS Load Balancer Controller
+###############################
+output "aws_lb_controller_role_arn" {
+  description = "The ARN of the AWS Role created for aws-loadbalancer-controller to use"
+  value       = aws_iam_role.aws_lb_controller.arn
+}
+
 ###############
 # External DNS
 ###############
