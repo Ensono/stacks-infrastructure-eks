@@ -93,6 +93,9 @@ jobs:
           TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
           TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
           TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_aws_lb_controller_enabled: ${{ env.AWS_LB_CONTROLLER_ENABLED }}
+          TF_VAR_aws_lb_controller_namespace: "${{ env.AWS_LB_CONTROLLER_NAMESPACE }}"
+          TF_VAR_aws_lb_controller_service_account_name: "${{ env.AWS_LB_CONTROLLER_SERVICE_ACCOUNT_NAME }}"
 
   InfraProd:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'

@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:${module.amido_stacks_infra.cluster_name}-sa-lb"]
+      values   = ["system:serviceaccount:${var.aws_lb_controller_namespace}:${var.aws_lb_controller_service_account_name}"]
     }
 
     condition {
