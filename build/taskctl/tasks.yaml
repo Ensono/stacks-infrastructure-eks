@@ -7,7 +7,7 @@ tasks:
       - Update-BuildNumber
 
   lint:yaml:
-    context: powershell-python
+    context: powershell
     description: Perform YAML linting
     command:
       - Invoke-YamlLint
@@ -36,13 +36,13 @@ tasks:
     context: powershell
     description: Plan Terraform
     command:
-      - Invoke-Terraform -Plan -Path $env:TF_FILE_LOCATION -Arguments "-input=false","-out=tfplan" -Debug #| Out-Null
+      - (Invoke-Terraform -Plan -Path $env:TF_FILE_LOCATION -Arguments "-input=false","-out=tfplan" -Debug) -replace "{{"{{"}}", "{{"{{"}}`"{{"{{"}}`"}}"
 
   infra:apply:
     context: powershell
     description: Apply Terraform Plan
     command:
-      - Push-Location $env:TF_FILE_LOCATION && Invoke-Terraform -Apply -Path tfplan -Debug
+      - (Push-Location $env:TF_FILE_LOCATION && Invoke-Terraform -Apply -Path tfplan -Debug) -replace "{{"{{"}}", "{{"{{"}}`"{{"{{"}}`"}}"
 
   infra:helm:apply:
     context: powershell

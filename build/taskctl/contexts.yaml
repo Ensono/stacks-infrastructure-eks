@@ -9,25 +9,6 @@ contexts:
         - ${PWD}:/app
         - -v
         - /var/run/docker.sock:/var/run/docker.sock
-        - -e
-        - PSModulePath=/modules
-        - -w
-        - /app
-        - --env-file
-        - envfile
-        - amidostacks/runner-pwsh:0.3.205-stable
-        - pwsh
-        - -NoProfile
-        - -Command
-    quote: "'"
-    before: env | grep -v PATH | grep -v SOURCEVERSIONMESSAGE | grep -v HOME > envfile
-
-  powershell-python:
-    executable:
-      bin: docker
-      args:
-        - run
-        - --rm
         - -v
         - ${PWD}:/app
         - -v
@@ -38,9 +19,10 @@ contexts:
         - /app
         - --env-file
         - envfile
-        - amidostacks/runner-pwsh-python:0.3.205-stable
+        - amidostacks/runner-pwsh:0.4.25-unstable
         - pwsh
         - -NoProfile
+        - -NonInteractive
         - -Command
     quote: "'"
     before: env | grep -v PATH | grep -v SOURCEVERSIONMESSAGE | grep -v HOME > envfile
@@ -61,9 +43,10 @@ contexts:
         - /app
         - --env-file
         - envfile
-        - amidostacks/runner-pwsh-dotnet:0.3.205-stable
+        - amidostacks/runner-pwsh-dotnet:0.4.25-unstable
         - pwsh
         - -NoProfile
+        - -NonInteractive
         - -Command
     quote: "'"
     env:
