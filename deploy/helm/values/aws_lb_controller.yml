@@ -1,4 +1,4 @@
-
+clusterName: "${env:TFOUT_cluster_name}"
 
 serviceAccount:
   annotations:

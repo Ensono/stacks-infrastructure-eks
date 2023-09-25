@@ -139,6 +139,24 @@ variable "log_retention_period" {
   default     = 180
 }
 
+##########
+# Ingress
+##########
+variable "aws_lb_controller_enabled" {
+  type        = bool
+  description = "Whether to enable AWS Load Balancer Controller or not"
+}
+
+variable "aws_lb_controller_service_account_name" {
+  type        = string
+  description = "The Kubernetes Service Account name for AWS Load Balancer Controller"
+}
+
+variable "aws_lb_controller_namespace" {
+  type        = string
+  description = "The Namespace that AWS Load Balancer Controller will be deployed to"
+}
+
 ###############
 # External DNS
 ###############

@@ -1,7 +1,7 @@
 charts:
-  - name: aws-lb-controller
+  - name: aws-load-balancer-controller
     namespace: ${env:AWS_LB_CONTROLLER_NAMESPACE}
-    location: aws-load-balancer-controller
+    location: aws
     enabled: ${AWS_LB_CONTROLLER_ENABLED}
     repo: https://aws.github.io/eks-charts
     values_template: deploy/helm/values/aws_lb_controller.yml

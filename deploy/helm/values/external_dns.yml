@@ -1,7 +1,7 @@
 domainFilters:
   - ${env:TF_VAR_dns_hostedzone_name}
 
-provider: ${env:CLOUD_PLATFORM}
+provider: ${env:CLOUD_PROVIDER}
 
 serviceAccount:
   annotations:
