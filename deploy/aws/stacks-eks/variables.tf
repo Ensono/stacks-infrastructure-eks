@@ -3,22 +3,26 @@
 ############################################
 
 variable "name_company" {
-  type    = string
+  type = string
+
   default = "ensono"
 }
 
 variable "name_project" {
-  type    = string
+  type = string
+
   default = "stacks"
 }
 
 variable "name_component" {
-  type    = string
-  default = "compute"
+  type = string
+
+  default = "eks"
 }
 
 variable "name_environment" {
-  type    = string
+  type = string
+
   default = "nonprod"
 }
 
@@ -34,10 +38,10 @@ variable "location_name_map" {
 }
 
 variable "region" {
-
-  description = "Name of the AWS Region for Deployment."
   type        = string
-  default     = "eu-west-2"
+  description = "Name of the AWS Region for Deployment."
+
+  default = "eu-west-2"
 }
 
 ########################################
@@ -45,98 +49,77 @@ variable "region" {
 ########################################
 
 variable "cluster_version" {
-
-  description = "Cluster Kubernetes Version."
   type        = string
-  default     = "1.27"
+  description = "Cluster Kubernetes Version."
+
+  default = "1.27"
 }
 
 variable "enable_irsa" {
-
-  description = "Switch to enable IRSA."
   type        = bool
-  default     = true
+  description = "Switch to enable IRSA."
+
+  default = true
 }
 
 variable "cluster_endpoint_private_access" {
-
-  description = "Switch to enable private access."
   type        = bool
-  default     = false
+  description = "Switch to enable private access."
+
+  default = false
 }
 
 variable "cluster_endpoint_public_access" {
-
-  description = "Switch to enable public access."
   type        = bool
-  default     = true
+  description = "Switch to enable public access."
+
+  default = true
+}
+
+variable "eks_minimum_nodes" {
+  type        = string
+  description = "The minimum number of nodes in the cluster"
+
+  default = 1
 }
 
 variable "eks_desired_nodes" {
-
-  description = "Configure desired number of nodes for the cluster."
   type        = string
-  default     = 2
+  description = "The initial starting number of nodes, ignored after first apply"
+
+  default = 2
+}
+
+variable "eks_maximum_nodes" {
+  type        = string
+  description = "The maximum number of nodes in the cluster"
+
+  default = 3
 }
 
 variable "eks_node_size" {
-
-  description = "Configure desired spec of nodes for the cluster."
   type        = string
-  default     = "t3.small"
+  description = "Configure desired spec of nodes for the cluster."
+
+  default = "t3.small"
 }
-
-variable "map_users" {
-
-  default = [{
-    userarn  = "arn:aws:iam::640853641954:user/kubeadmin"
-    username = "kubeadmin"
-    groups   = ["system:masters"]
-  }]
-
-  description = "Additional IAM users to add to the aws-auth configmap."
-
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-}
-
-variable "manage_aws_auth_configmap" {
-
-  description = "Determines whether to manage the aws-auth configmap"
-  type        = bool
-}
-
-# variable "map_roles" {
-
-#   default     = []
-#   description = "Additional IAM roles to add to the aws-auth configmap."
-#   type = list(object({
-#     rolearn  = string
-#     username = string
-#     groups   = list(string)
-#   }))
-# }
 
 ########################################
 # DNS Configuration
 ########################################
 
-
 variable "dns_hostedzone_name" {
-  description = "Name of the hosted-zone in Route53."
   type        = string
-  default     = "nonprod.aws.stacks.ensono.com"
+  description = "Name of the hosted-zone in Route53."
+
+  default = "nonprod.aws.stacks.ensono.com"
 }
-
-
 
 variable "log_retention_period" {
   type        = string
   description = "Specifies the number of days you want to retain log events in the specified log group"
-  default     = 180
+
+  default = 180
 }
 
 ##########
