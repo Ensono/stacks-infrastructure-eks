@@ -1,7 +1,3 @@
-########################################
-# Amido Stacks Infra Configuration
-########################################
-
 # Naming convention
 module "default_label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
@@ -10,30 +6,4 @@ module "default_label" {
   name        = "${lookup(var.location_name_map, var.region, "eu-west-2")}-${var.name_component}"
   delimiter   = "-"
   tags        = local.default_tags
-}
-
-
-module "amido_stacks_infra" {
-  source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=featuer/togglenaming"
-  # source = "git::https://github.com/amido/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v1.5.5"
-
-  # Deployment Region
-  region = var.region
-
-  # EKS Cluster Configuration
-  cluster_name                    = module.default_label.id
-  cluster_version                 = var.cluster_version
-  eks_desired_nodes               = var.eks_desired_nodes
-  eks_node_size                   = var.eks_node_size
-  enable_irsa                     = var.enable_irsa
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access = var.cluster_endpoint_private_access
-
-  # Provides EKS API Access to Additional IAM Users and Roles, default Admin access is provided only to the cluster creator identity
-  # map_roles = var.map_roles
-  manage_aws_auth_configmap = var.manage_aws_auth_configmap
-  map_users                 = var.map_users
-
-  # Pass Non-default Tag Values to Underlying Modules
-  tags = local.default_tags
 }

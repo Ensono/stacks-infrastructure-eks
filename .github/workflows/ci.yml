@@ -6,13 +6,13 @@ on:
       - 'build/github/**'
       - 'build/taskctl/**'
       - 'src/**'
-      - 'deploy/aws/**' # TODO: Review this as new cloud provider targets are used
-      - 'deploy/k8s/aws/**'  # TODO: Review this as new cloud provider targets are used
+      - 'deploy/aws/**'
+      - 'deploy/k8s/aws/**'
       - '.github/workflows/ci.yml'
   pull_request:
     branches:
-        - master
-        - main
+      - master
+      - main
 
 env:
   # The following SECRETS are required in your GH Repository:
@@ -66,7 +66,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl -d infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      - run: taskctl -d infrastructure
         env:
           ENV_NAME: nonprod
           # AWS Environmental Config
@@ -105,7 +106,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl -d infrastructure # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      # TODO: This is tactical, will require refactor of task to take arguments as separate var
+      - run: taskctl -d infrastructure
         env:
           ENV_NAME: prod
           # AWS Environmental Config

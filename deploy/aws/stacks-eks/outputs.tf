@@ -68,7 +68,7 @@ output "cloudwatch_log_group_arn" {
 ###############################
 output "aws_lb_controller_role_arn" {
   description = "The ARN of the AWS Role created for aws-loadbalancer-controller to use"
-  value       = aws_iam_role.aws_lb_controller.arn
+  value       = module.aws_lb_controller_irsa_iam_role[0].irsa_role_arn
 }
 
 ###############
@@ -76,5 +76,5 @@ output "aws_lb_controller_role_arn" {
 ###############
 output "external_dns_role_arn" {
   description = "The ARN of the AWS Role created for External DNS to use"
-  value       = aws_iam_role.external_dns.arn
+  value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
 }

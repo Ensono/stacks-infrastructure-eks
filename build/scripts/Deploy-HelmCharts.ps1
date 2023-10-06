@@ -18,7 +18,7 @@ param (
 
     [string]
     # Cloud provider being targeted
-    $Provider = $env:CLOUD_PLATFORM,
+    $Provider = $env:CLOUD_PROVIDER,
 
     [string]
     [Alias("ResourceGroup")]
@@ -100,6 +100,17 @@ foreach ($chart in $helm.charts) {
         $namespace = $chart.namespace
     }
 
+    # If a repo has been set, run the command to add the repo to helm
+    if (![String]::IsNullOrEmpty($chart.repo)) {
+        $command = "Invoke-Helm -Repo -RepositoryName {0} -RepositoryUrl {1}" -f $chart.location, $chart.repo
+
+        if ($Dryrun) {
+            Write-Host $command
+        } else {
+            Invoke-Expression $command
+        }
+    }
+
     # Configure an array to hold the pareameters for the helm cmdlet
     $helm_args = @()
     $helm_args += "-install"
@@ -134,23 +145,16 @@ foreach ($chart in $helm.charts) {
         $helm_args += "-valuepath {0}" -f $target
     }
 
-    # If a repo has been set, run the command to add the repo to helm
-    if (![String]::IsNullOrEmpty($chart.repo)) {
-        $command = "Invoke-Helm -Repo -RepositoryName {0} -RepositoryUrl {1}" -f $chart.location, $chart.repo
-
-        if ($Dryrun) {
-            Write-Host $command
-        } else {
-            Invoke-Expression $command
-        }
-    }
-
     # Build up the command to run
     $command = "Invoke-Helm {0}" -f ($helm_args -join " ")
+
+    Write-Host ("DEPLOYING: '{0}/{1}'" -f $chart.location, $chart.name)
 
     if ($Dryrun) {
         Write-Host $command
     } else {
         Invoke-Expression $command
     }
+
+    Write-Host ("DEPLOYING FINISHED: '{0}/{1}'" -f $chart.location, $chart.name)
 }

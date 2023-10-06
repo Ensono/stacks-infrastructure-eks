@@ -2,7 +2,9 @@
 # Provider to connect to AWS
 # https://www.terraform.io/docs/providers/aws/
 ########################################
-provider "aws" {}
+provider "aws" {
+  region = var.region
+}
 
 provider "kubernetes" {
 
@@ -30,21 +32,21 @@ provider "helm" {
   }
 }
 
+
 terraform {
-  required_version = ">= 0.14"
+  required_version = ">= 1.0"
 
   backend "s3" {} # use backend.config for remote backend
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
 
-    # TODO: Remove me once the ingress has moved out of TF...
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.10"
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5"
     }
   }
 

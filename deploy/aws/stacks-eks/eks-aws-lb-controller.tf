@@ -1,44 +1,17 @@
-# trust policy for aws loadbalancer-controller
-data "aws_iam_policy_document" "aws_alb_ingress_controller_role_policy" {
-  statement {
-    actions = [
-      "sts:AssumeRoleWithWebIdentity",
-    ]
+module "aws_lb_controller_irsa_iam_role" {
+  count = var.aws_lb_controller_enabled ? 1 : 0
 
-    principals {
-      type        = "Federated"
-      identifiers = ["arn:aws:iam::${local.account_id}:oidc-provider/${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}"]
-    }
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=featuer/togglenaming"
+  # source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v1.5.5"
 
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.aws_lb_controller_namespace}:${var.aws_lb_controller_service_account_name}"]
-    }
+  cluster_name            = module.default_label.id
+  cluster_oidc_issuer_url = module.amido_stacks_infra.cluster_oidc_issuer_url
+  aws_account_id          = local.account_id
+  namespace               = var.aws_lb_controller_namespace
+  service_account_name    = var.aws_lb_controller_service_account_name
+  resource_description    = "aws-lb-controller to manage Load Balancers for Ingress resources and Services with the correct annotations"
 
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(module.amido_stacks_infra.cluster_oidc_issuer_url, "https://", "")}:aud"
-      values   = ["sts.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "aws_lb_controller" {
-  name                  = "${module.amido_stacks_infra.cluster_name}-role-lb"
-  assume_role_policy    = data.aws_iam_policy_document.aws_alb_ingress_controller_role_policy.json
-  force_detach_policies = true
-  tags                  = local.default_tags
-}
-
-# NOTE: This policy comes from https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
-# New versions should be checked and inserted below as upgrades to the Ingress Controller helm chart happen.
-# This is why this resource is a HEREDOC instead of the usual `aws_iam_policy_document` for easier copy and paste.
-resource "aws_iam_policy" "aws_lb_controller" {
-  name        = "rolepolicy-aws-lb-controller"
-  path        = "/${module.amido_stacks_infra.cluster_name}/"
-  description = "Permissions for aws-lb-controller to manage Load Balancers for Ingress resources and Services with the correct annotations."
-
+  # TODO: What's the best way to handle some wandall policy??
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -283,142 +256,3 @@ resource "aws_iam_policy" "aws_lb_controller" {
 }
 EOF
 }
-
-resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
-  role       = aws_iam_role.aws_lb_controller.id
-  policy_arn = aws_iam_policy.aws_lb_controller.arn
-}
-
-# Kubernetes Objects: Service Account, Cluster Role and Cluster Role Binding
-
-# resource "kubernetes_service_account" "aws_load_balancer_controller" {
-#   depends_on = [module.amido_stacks_infra]
-
-#   automount_service_account_token = true
-#   metadata {
-#     name      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
-#     namespace = "kube-system"
-#     annotations = {
-#       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb_controller.arn
-#     }
-#     labels = {
-#       "app.kubernetes.io/name"      = "${module.amido_stacks_infra.cluster_name}-sa-lb"
-#       "app.kubernetes.io/version"   = "2.2.1"
-#       "app.kubernetes.io/component" = "controller"
-#     }
-#   }
-# }
-
-# resource "kubernetes_cluster_role" "aws_load_balancer_controller" {
-#   depends_on = [module.amido_stacks_infra]
-
-#   metadata {
-#     name = "${module.amido_stacks_infra.cluster_name}-role-lb"
-
-#     labels = {
-#       "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-role-lb"
-#       "app.kubernetes.io/version" = "2.2.1"
-#     }
-#   }
-
-#   rule {
-#     api_groups = [
-#       "",
-#       "extensions",
-#     ]
-
-#     resources = [
-#       "configmaps",
-#       "endpoints",
-#       "events",
-#       "ingresses",
-#       "ingresses/status",
-#       "services",
-#       "pods/status"
-#     ]
-
-#     verbs = [
-#       "create",
-#       "get",
-#       "list",
-#       "update",
-#       "watch",
-#       "patch",
-#     ]
-#   }
-
-#   rule {
-#     api_groups = [
-#       "",
-#       "extensions",
-#     ]
-
-#     resources = [
-#       "nodes",
-#       "pods",
-#       "secrets",
-#       "services",
-#       "namespaces",
-#     ]
-
-#     verbs = [
-#       "get",
-#       "list",
-#       "watch",
-#     ]
-#   }
-# }
-
-# resource "kubernetes_cluster_role_binding" "aws_load_balancer_controller" {
-#   depends_on = [module.amido_stacks_infra]
-
-#   metadata {
-#     name = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
-
-#     labels = {
-#       "app.kubernetes.io/name"    = "${module.amido_stacks_infra.cluster_name}-rolebind-lb"
-#       "app.kubernetes.io/version" = "2.2.1"
-#     }
-#   }
-
-#   role_ref {
-#     api_group = "rbac.authorization.k8s.io"
-#     kind      = "ClusterRole"
-#     name      = kubernetes_cluster_role.aws_load_balancer_controller.metadata[0].name
-#   }
-
-#   subject {
-#     api_group = ""
-#     kind      = "ServiceAccount"
-#     name      = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
-#     namespace = kubernetes_service_account.aws_load_balancer_controller.metadata[0].namespace
-#   }
-# }
-
-# resource "helm_release" "aws_load_balancer_controller" {
-#   name       = "${module.amido_stacks_infra.cluster_name}-helm-lb"
-#   repository = "https://aws.github.io/eks-charts"
-#   chart      = "aws-load-balancer-controller"
-#   namespace  = "kube-system"
-
-#   set {
-#     name  = "clusterName"
-#     value = module.amido_stacks_infra.cluster_name
-#   }
-
-#   set {
-#     name  = "serviceAccount.create"
-#     value = false
-#   }
-
-#   set {
-#     name  = "serviceAccount.name"
-#     value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
-#   }
-
-#   set {
-#     name  = "replicaCount"
-#     value = "1"
-#   }
-
-# }
