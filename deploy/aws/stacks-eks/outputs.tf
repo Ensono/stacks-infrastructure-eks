@@ -68,7 +68,7 @@ output "cloudwatch_log_group_arn" {
 ###############################
 output "aws_lb_controller_role_arn" {
   description = "The ARN of the AWS Role created for aws-loadbalancer-controller to use"
-  value       = module.aws_lb_controller_irsa_iam_role[0].irsa_role_arn
+  value       = var.aws_lb_controller_enabled == 1 ? module.aws_lb_controller_irsa_iam_role[0].irsa_role_arn : ""
 }
 
 ###############
@@ -77,4 +77,12 @@ output "aws_lb_controller_role_arn" {
 output "external_dns_role_arn" {
   description = "The ARN of the AWS Role created for External DNS to use"
   value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
+}
+
+###############
+# EBS CSI Driver
+###############
+output "ebs_csi_driver_role_arn" {
+  description = "The ARN of the AWS Role created for EBS CSI driver to use"
+  value       = module.ebs_csi_irsa_iam_role.irsa_role_arn
 }

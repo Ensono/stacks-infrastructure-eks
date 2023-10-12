@@ -1,0 +1,5 @@
+discriminator: payuk
+
+targets:
+  - name: forgerock
+    discriminator: payuk-{{ target.name }}

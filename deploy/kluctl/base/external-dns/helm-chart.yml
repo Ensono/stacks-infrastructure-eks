@@ -1,0 +1,7 @@
+helmChart:
+  repo: https://kubernetes-sigs.github.io/external-dns/
+  chartName: external-dns
+  chartVersion: 1.13.1
+  skipPrePull: true
+  releaseName: external-dns
+  namespace: external-dns
