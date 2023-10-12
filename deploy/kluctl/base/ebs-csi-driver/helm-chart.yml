@@ -1,0 +1,7 @@
+helmChart:
+  repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+  chartName: aws-ebs-csi-driver
+  chartVersion: 2.23.1
+  skipPrePull: true
+  releaseName: ebs-csi-driver
+  namespace: kube-system

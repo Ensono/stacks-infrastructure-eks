@@ -1,0 +1,9 @@
+domainFilters:
+  - "balpayuktest.com"
+
+provider: aws
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::790262776877:role/payuk-mvp-dev-ew2-eks/external-dns-external-dns-sa"
+  name: "external-dns-sa"

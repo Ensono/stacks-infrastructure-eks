@@ -5,13 +5,13 @@
 variable "name_company" {
   type = string
 
-  default = "ensono"
+  default = "payuk"
 }
 
 variable "name_project" {
   type = string
 
-  default = "stacks"
+  default = "mvp"
 }
 
 variable "name_component" {
@@ -23,7 +23,7 @@ variable "name_component" {
 variable "name_environment" {
   type = string
 
-  default = "nonprod"
+  default = "dev"
 }
 
 # Each region must have corresponding a shortend name for resource naming purposes
@@ -52,14 +52,7 @@ variable "cluster_version" {
   type        = string
   description = "Cluster Kubernetes Version."
 
-  default = "1.27"
-}
-
-variable "enable_irsa" {
-  type        = bool
-  description = "Switch to enable IRSA."
-
-  default = true
+  default = "1.28"
 }
 
 variable "cluster_endpoint_private_access" {
@@ -87,21 +80,21 @@ variable "eks_desired_nodes" {
   type        = string
   description = "The initial starting number of nodes, ignored after first apply"
 
-  default = 2
+  default = 1
 }
 
 variable "eks_maximum_nodes" {
   type        = string
   description = "The maximum number of nodes in the cluster"
 
-  default = 3
+  default = 1
 }
 
 variable "eks_node_size" {
   type        = string
   description = "Configure desired spec of nodes for the cluster."
 
-  default = "t3.small"
+  default = "m5.xlarge"
 }
 
 ########################################
@@ -112,7 +105,7 @@ variable "dns_hostedzone_name" {
   type        = string
   description = "Name of the hosted-zone in Route53."
 
-  default = "nonprod.aws.stacks.ensono.com"
+  default = "balpayuktest.com"
 }
 
 variable "log_retention_period" {
@@ -125,19 +118,23 @@ variable "log_retention_period" {
 ##########
 # Ingress
 ##########
+
 variable "aws_lb_controller_enabled" {
   type        = bool
   description = "Whether to enable AWS Load Balancer Controller or not"
+  default = false
 }
 
 variable "aws_lb_controller_service_account_name" {
   type        = string
   description = "The Kubernetes Service Account name for AWS Load Balancer Controller"
+  default = ""
 }
 
 variable "aws_lb_controller_namespace" {
   type        = string
   description = "The Namespace that AWS Load Balancer Controller will be deployed to"
+  default = ""
 }
 
 ###############
@@ -146,14 +143,17 @@ variable "aws_lb_controller_namespace" {
 variable "external_dns_enabled" {
   type        = bool
   description = "Whether to enable External DNS or not"
+  default = true
 }
 
 variable "external_dns_service_account_name" {
   type        = string
   description = "The Kubernetes Service Account name for External DNS"
+  default = "external-dns-sa"
 }
 
 variable "external_dns_namespace" {
   type        = string
   description = "The Namespace that External DNS will be deployed to"
+  default = "external-dns"
 }

@@ -1,0 +1,13 @@
+deployments:
+  - path: namespaces
+  - barrier: true
+  - path: nginx
+  - path: external-dns
+  - path: volume-snapshot-crd
+  - path: ebs-csi-driver
+  - path: storage-classess
+  - path: cert-manager
+  #- path: forgerock-dependencies
+#vars:
+#  - systemEnvVars:
+#      replicaCount: TF_VAR_REPLICA_COUNT
