@@ -1,6 +1,7 @@
 name: air.stacks-infrastructure-eks
 
-# on:
+on:
+  workflow_dispatch:
 #   push:
 #     paths:
 #       - 'build/github/**'
