@@ -29,3 +29,5 @@ pipelines:
       depends_on: infra:plan
     - task: infra:kluctl:apply
       depends_on: infra:apply
+    - task: infra:forgeops:apply
+      depends_on: infra:kluctl:apply
