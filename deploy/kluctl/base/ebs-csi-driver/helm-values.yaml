@@ -1,4 +1,4 @@
 controller:
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::790262776877:role/payuk-mvp-dev-ew2-eks/kube-system-ebs-csi-controller-sa"
+      eks.amazonaws.com/role-arn: {{ ebs_csi_driver_role_arn }}
