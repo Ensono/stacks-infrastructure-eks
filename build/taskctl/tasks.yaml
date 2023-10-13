@@ -57,6 +57,17 @@ tasks:
           -clustername ${env:TFOUT_cluster_name} `
           -provider ${env:CLOUD_PROVIDER}
 
+  infra:kluctl:apply:
+    context: powershell
+    description: Deploy using kluctl
+    command:
+      - |
+        Invoke-Terraform -Workspace -Arguments ${env:TF_VAR_name_environment} -Path ${env:TF_FILE_LOCATION}
+        Invoke-Terraform -Output -Path ${env:TF_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+        aws eks update-kubeconfig --name ${env:TFOUT_cluster_name} --region ${env:REGION}
+        cd deploy/kluctl
+        kluctl deploy -y
+
   # publish:github:
   #   context: powershell
   #   description: Publish Release to GitHub
@@ -86,10 +97,10 @@ tasks:
   #   command:
   #     - Write-Host "***** DEBUG *****" && get-childitem -filter "*opencover.xml" -recurse
 
-  # debug:sleep:
-  #   context: powershell
-  #   command:
-  #     - echo "Sleeping for {{ .sleep }}"
-  #     - sleep {{ .sleep }}
-  #   variables:
-  #     sleep: 30
+  debug:sleep:
+    context: powershell
+    command:
+      - echo "Sleeping for {{ .sleep }}"
+      - sleep {{ .sleep }}
+    variables:
+      sleep: 3000
