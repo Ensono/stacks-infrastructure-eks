@@ -57,6 +57,7 @@ tasks:
           -clustername ${env:TFOUT_cluster_name} `
           -provider ${env:CLOUD_PROVIDER}
 
+  #TODO: We should have a kluctl apply in independent runner
   infra:kluctl:apply:
     context: powershell
     description: Deploy using kluctl
@@ -67,6 +68,23 @@ tasks:
         aws eks update-kubeconfig --name ${env:TFOUT_cluster_name} --region ${env:REGION}
         cd deploy/kluctl
         kluctl deploy -y
+
+  #kubectl was broken because wrong architecture is installed in image and kustomize missing
+  #TODO: This should be fixed in the image and all these commands need to be looked at
+  #TODO: Currently we are using the python forgeops tool. It would be better to extract the relevant
+  #bits and deploy via kluctl
+  infra:forgeops:apply:
+    context: powershell
+    description: Deploy forgerock
+    command:
+      - |
+        curl -L "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.1.1/kustomize_v5.1.1_linux_amd64.tar.gz"  -o /tmp/kustomize.tar.gz  &&  tar zxf /tmp/kustomize.tar.gz -C /usr/local/bin kustomize && chmod +x /usr/local/bin/kustomize
+        curl -L "https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.1/2023-09-14/bin/linux/amd64/kubectl" -o /usr/bin/kubectl && chmod +x /usr/bin/kubectl
+        Invoke-Terraform -Workspace -Arguments ${env:TF_VAR_name_environment} -Path ${env:TF_FILE_LOCATION}
+        Invoke-Terraform -Output -Path ${env:TF_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+        aws eks update-kubeconfig --name ${env:TFOUT_cluster_name} --region ${env:REGION}
+        cd deploy/forgeops/bin
+        python forgeops install --cdk --fqdn ${env:TF_VAR_dns_hostedzone_name}
 
   # publish:github:
   #   context: powershell

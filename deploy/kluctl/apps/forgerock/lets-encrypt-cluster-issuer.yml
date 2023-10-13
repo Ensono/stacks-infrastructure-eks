@@ -17,4 +17,4 @@ spec:
     - dns01:
         route53:
           region: eu-west-2
-          hostedZoneID: Z04405351TOLVDU6RTTT2
+          hostedZoneID: Z02124183JYPX2UO7A75I #TODO - need to get from terraform
