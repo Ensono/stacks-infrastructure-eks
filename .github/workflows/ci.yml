@@ -1,18 +1,18 @@
 name: air.stacks-infrastructure-eks
 
-on:
-  push:
-    paths:
-      - 'build/github/**'
-      - 'build/taskctl/**'
-      - 'src/**'
-      - 'deploy/aws/**'
-      - 'deploy/k8s/aws/**'
-      - '.github/workflows/ci.yml'
-  pull_request:
-    branches:
-      - master
-      - main
+# on:
+#   push:
+#     paths:
+#       - 'build/github/**'
+#       - 'build/taskctl/**'
+#       - 'src/**'
+#       - 'deploy/aws/**'
+#       - 'deploy/k8s/aws/**'
+#       - '.github/workflows/ci.yml'
+#   pull_request:
+#     branches:
+#       - master
+#       - main
 
 env:
   # The following SECRETS are required in your GH Repository:
