@@ -86,3 +86,11 @@ output "ebs_csi_driver_role_arn" {
   description = "The ARN of the AWS Role created for EBS CSI driver to use"
   value       = module.ebs_csi_irsa_iam_role.irsa_role_arn
 }
+
+###############
+# Cert Manager
+###############
+output "cert_manager_role_arn" {
+  description = "The ARN of the AWS Role created for cert manager to use"
+  value       = module.cert_manager_irsa_iam_role.irsa_role_arn
+}

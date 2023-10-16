@@ -1,1 +1,11 @@
 installCRDs: true
+
+serviceAccount:
+  create: true
+  name: "cert-manager-sa"
+  annotations:
+    eks.amazonaws.com/role-arn: "{{ cert_manager_role_arn }}"
+
+# the securityContext is required, so the pod can access files required to assume the IAM role
+securityContext:
+  fsGroup: 1001
