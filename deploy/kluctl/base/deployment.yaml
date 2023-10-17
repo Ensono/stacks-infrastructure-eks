@@ -13,3 +13,4 @@ vars:
       dns_hostedzone_name: TF_VAR_dns_hostedzone_name
       external_dns_role_arn: TFOUT_external_dns_role_arn
       ebs_csi_driver_role_arn: TFOUT_ebs_csi_driver_role_arn
+      cert_manager_role_arn: TFOUT_cert_manager_role_arn

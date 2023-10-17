@@ -1,9 +1,11 @@
 # Local .terraform directories
 **/.terraform/*
 
+# .tf lock files
+*.lock.hcl
+
 # Ignore Kubernetes config file
 kubeconfig_*
-
 
 # .tfstate files
 *.tfstate
@@ -50,3 +52,6 @@ envfile
 .env
 /tmp
 tfplan
+
+# Used to inject pipeline variables for local testing
+.local.env
