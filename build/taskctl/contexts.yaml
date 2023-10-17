@@ -1,3 +1,4 @@
+#TODO: Remove AmidoBuild scripts mounts. Update independent runner image instead.
 contexts:
   powershell:
     executable:
@@ -13,13 +14,17 @@ contexts:
         - ${PWD}:/app
         - -v
         - /var/run/docker.sock:/var/run/docker.sock
+        - -v
+        - ${PWD}/AmidoBuild.psm1:/modules/AmidoBuild/AmidoBuild.psm1
+        - -v
+        - ${PWD}/AmidoBuild.psd1:/modules/AmidoBuild/AmidoBuild.psd1
         - -e
         - PSModulePath=/modules
         - -w
         - /app
         - --env-file
         - envfile
-        - amidostacks/runner-pwsh:0.4.26-unstable
+        - amidostacks/runner-pwsh:0.4.27-unstable
         - pwsh
         - -NoProfile
         - -NonInteractive
