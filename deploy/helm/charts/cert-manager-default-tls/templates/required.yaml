@@ -1,0 +1,3 @@
+{{- $_ := required ".Values.acme.email is a required value" .Values.acme.email }}
+{{- $_ := required ".Values.aws.region is a required value" .Values.aws.region }}
+{{- $_ := required ".Values.certificate.dnsName is a required value" .Values.certificate.dnsName }}

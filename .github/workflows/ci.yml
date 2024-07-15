@@ -2,22 +2,13 @@ name: air.stacks-infrastructure-eks
 
 on:
   push:
-    paths:
-      - 'build/github/**'
-      - 'build/taskctl/**'
-      - 'src/**'
-      - 'deploy/aws/**'
-      - 'deploy/k8s/aws/**'
-      - '.github/workflows/ci.yml'
+    branches:
+      - main
   pull_request:
     branches:
-      - master
       - main
 
 env:
-  # The following SECRETS are required in your GH Repository:
-  #   PACT_BEARER_TOKEN
-  #   SONAR_TOKEN
   # The following SECRETS must be defined per environment (which must match environment key) in your GH Repository:
   #   AWS_ACCESS_KEY_ID
   #   AWS_ACCOUNT_ID
@@ -26,48 +17,100 @@ env:
   #   AWS_TF_STATE_BUCKET
   #   AWS_TF_STATE_DYNAMOTABLE
   #   AWS_TF_STATE_ENCRYPTION
-  #   AWS_TF_STATE_KEY
   #   AWS_TF_STATE_REGION
   CLOUD_PROVIDER: "aws"
-  TaskctlVersion: '1.4.2'
+  TaskctlVersion: '1.5.1'
   COMPANY: "ensono"
   PROJECT: "stacks"
   COMPONENT: "eks"
   REGION: "eu-west-2"
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-  TF_FILE_LOCATION: deploy/aws/stacks-eks
-  NON_PROD_BASE_DOMAIN_NAME: "nonprod.aws.stacks.ensono.com"
-  PROD_BASE_DOMAIN_NAME: "prod.aws.stacks.ensono.com"
-  # AWS LB Controller Helm
-  AWS_LB_CONTROLLER_ENABLED: true
-  AWS_LB_CONTROLLER_NAMESPACE: "aws-lb-controller"
-  AWS_LB_CONTROLLER_SERVICE_ACCOUNT_NAME: "aws-lb-controller"
-  # External DNS Helm
-  EXTERNAL_DNS_ENABLED: true
-  EXTERNAL_DNS_NAMESPACE: "external-dns"
-  EXTERNAL_DNS_SERVICE_ACCOUNT_NAME: "external-dns"
+  NON_PROD_AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  TF_INFRA_FILE_LOCATION: deploy/aws/infra
+  TF_PRE_INFRA_FILE_LOCATION: deploy/aws/pre-infra
+  AWS_TF_PRE_INFRA_STATE_KEY: stacks-infrastructure-eks-pre
+  AWS_TF_INFRA_STATE_KEY: stacks-infrastructure-eks
+
+  VPC_CIDR: "10.0.0.0/16"
+  NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
+  PROD_VPC_NAT_GATEWAY_PER_AZ: true
+
+  # DNS
+  DNS_CREATE_HOSTEDZONE: true
+  DNS_CREATE_HOSTEDZONE_PARENT_LINK: true
+  NON_PROD_DOMAIN_NAME: "nonprod.aws.stacks.ensono.com"
+  PROD_DOMAIN_NAME: "prod.aws.stacks.ensono.com"
+  DNS_PARENT_NAME: "aws.stacks.ensono.com"
+
+  CLUSTER_VERSION: "1.30"
+  NON_PROD_CLUSTER_SINGLE_AZ: true
+  PROD_CLUSTER_SINGLE_AZ: false
+
+  EKS_MINIMUM_NODES: "2"
+  EKS_DESIRED_NODES: "2"
+  EKS_MAXIMUM_NODES: "3"
+  EKS_NODE_SIZE: "t3.small"
+
+  CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
+  CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
+
+  CONTAINER_REGISTRY_PULL_PUSH_USER: true
+
+  NON_PROD_FIREWALL_ENABLED: false
+  PROD_FIREWALL_ENABLED: true
+  FIREWALL_ALLOWED_DOMAIN_TARGETS: "[]"
+  NON_PROD_FIREWALL_CREATE_TLS_ALERT_RULE: false
+  PROD_FIREWALL_CREATE_TLS_ALERT_RULE: true
+
+  # Ingress Nginx Helm
+  INGRESS_NGINX_ENABLED: true
+  INGRESS_NGINX_NAMESPACE: "ingress-nginx"
+  INGRESS_NGINX_SERVICE_ACCOUNT_NAME: "ingress-nginx"
+  INGRESS_NGINX_REPLICA_COUNT: 3
+
+  # Cert Manager Helm
+  CERT_MANAGER_ENABLED: true
+  CERT_MANAGER_NAMESPACE: "cert-manager"
+  CERT_MANAGER_SERVICE_ACCOUNT_NAME: "cert-manager"
+  CERT_MANAGER_EMAIL_ADDRESS: "stacks@ensono.com"
 
 jobs:
   Lint:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: ./build/github/templates/install-taskctl
-      - run: taskctl -d lint
+
+      - run: taskctl image-pull
+
+      - run: taskctl yaml-lint
+
+      - name: Pre-Infrastructure Terraform Lint
+        run: taskctl terraform-lint
         env:
-          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
+          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
+
+      - name: Infrastructure Terraform Lint
+        run: taskctl terraform-lint
+        env:
+          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
 
   InfraDev:
-    if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main'
+    if: github.ref != 'refs/heads/main'
     needs: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: nonprod
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: ./build/github/templates/install-taskctl
-      # TODO: This is tactical, will require refactor of task to take arguments as separate var
-      - run: taskctl -d infrastructure
+
+      - run: taskctl image-pull
+
+      - name: Pre-Infrastructure Deploy
+        run: |
+          taskctl infrastructure
+          taskctl pre-infra:post-deploy
         env:
           ENV_NAME: nonprod
           # AWS Environmental Config
@@ -75,61 +118,99 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
-          AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
-          AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
-          AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
-          AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
-          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
           # Terraform Resource Configuration
-          TF_VAR_name_environment: "nonprod"
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_name_environment: "nonprod"
           TF_VAR_region: ${{ env.REGION }}
-          TF_VAR_dns_hostedzone_name: "${{ env.NON_PROD_BASE_DOMAIN_NAME }}"
-          TF_VAR_enable_zone: true
-          TF_VAR_manage_aws_auth_configmap: true
-          TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
-          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
-          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
-          TF_VAR_aws_lb_controller_enabled: ${{ env.AWS_LB_CONTROLLER_ENABLED }}
-          TF_VAR_aws_lb_controller_namespace: "${{ env.AWS_LB_CONTROLLER_NAMESPACE }}"
-          TF_VAR_aws_lb_controller_service_account_name: "${{ env.AWS_LB_CONTROLLER_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_dns_create_hostedzone: ${{ env.DNS_CREATE_HOSTEDZONE}}
+          TF_VAR_dns_hostedzone_name: ${{ env.NON_PROD_DOMAIN_NAME }}
+          TF_VAR_dns_create_hostedzone_parent_link: ${{ env.DNS_CREATE_HOSTEDZONE_PARENT_LINK }}
+          TF_VAR_dns_parent_hostedzone_name: ${{ env.DNS_PARENT_NAME }}
+          TF_VAR_k8s_role_file_map: "[\"../../k8s/users/nonprod-admin-users.json\", \"../../k8s/users/nonprod-developer-users.json\"]"
+          TF_VAR_container_registry_pull_push_user: ${{ env.CONTAINER_REGISTRY_PULL_PUSH_USER }}
 
-  InfraProd:
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-    needs: Lint
-    runs-on: ubuntu-latest
-    environment: prod
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./build/github/templates/install-taskctl
-      # TODO: This is tactical, will require refactor of task to take arguments as separate var
-      - run: taskctl -d infrastructure
+      - name: Infrastructure Deploy
+        run: taskctl infrastructure
         env:
-          ENV_NAME: prod
+          ENV_NAME: nonprod
           # AWS Environmental Config
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
-          AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
-          AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
-          AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
-          AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
-          TF_FILE_LOCATION: ${{ env.TF_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
           # Terraform Resource Configuration
-          TF_VAR_name_environment: "prod"
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
           TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_name_environment: "nonprod"
           TF_VAR_region: ${{ env.REGION }}
-          TF_VAR_dns_hostedzone_name: "${{ env.PROD_BASE_DOMAIN_NAME }}"
-          TF_VAR_enable_zone: true
-          TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
-          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
-          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_vpc_cidr: ${{ env.VPC_CIDR }}
+          TF_VAR_vpc_nat_gateway_per_az: ${{ env.NON_PROD_VPC_NAT_GATEWAY_PER_AZ }}
+          TF_VAR_firewall_enabled: ${{ env.NON_PROD_FIREWALL_ENABLED }}
+          TF_VAR_firewall_allowed_domain_targets: ${{ env.FIREWALL_ALLOWED_DOMAIN_TARGETS }}
+          TF_VAR_firewall_create_tls_alert_rule: ${{ env.NON_PROD_FIREWALL_CREATE_TLS_ALERT_RULE }}
+          TF_VAR_cluster_version: ${{ env.CLUSTER_VERSION }}
+          TF_VAR_cluster_single_az: ${{ env.NON_PROD_CLUSTER_SINGLE_AZ }}
+          TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
+          TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
+          TF_VAR_eks_minimum_nodes: ${{ env.EKS_MINIMUM_NODES }}
+          TF_VAR_eks_desired_nodes: ${{ env.EKS_DESIRED_NODES }}
+          TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
+          TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
+          TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
+          TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
+
+      - name: Helm Deploy
+        run: taskctl -d helm
+        env:
+          ENV_NAME: nonprod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Helm Config
+          CERT_MANAGER_DNS_NAME: ${{ env.NON_PROD_DOMAIN_NAME }}
+
+# InfraProd:
+#   if: github.ref == 'refs/heads/main'
+#   needs: Lint
+#   runs-on: ubuntu-24.04
+#   environment: prod
+#   steps:
+#     - uses: actions/checkout@v4
+
+#     - uses: ./build/github/templates/install-taskctl
+#     - run: taskctl -d infrastructure
+#       env:
+#         ENV_NAME: prod
+#         # AWS Environmental Config
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         AWS_DEFAULT_REGION: ${{ env.REGION }}
+#         # Terraform Backend Configuration
+#         AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
+#         AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
+#         AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+#         AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
+#         AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
+#         TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
+#         TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+#         # Terraform Resource Configuration
+#         TF_VAR_name_environment: "prod"
+#         TF_VAR_name_company: ${{ env.COMPANY }}
+#         TF_VAR_name_project: ${{ env.PROJECT }}
+#         TF_VAR_name_component: ${{ env.COMPONENT }}
+#         TF_VAR_region: ${{ env.REGION }}
+#         TF_VAR_dns_hostedzone_name: "${{ env.PROD_BASE_DOMAIN_NAME }}"
+#         TF_VAR_enable_zone: true
+#         TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
+#         TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
+#         TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
+#         TF_VAR_firewall_enabled: "true"

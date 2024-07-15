@@ -1,0 +1,35 @@
+charts:
+  - name: aws-auth-config
+    namespace: kube-system
+    location: ./deploy/helm/charts
+    enabled: true
+    values_template: deploy/helm/values/aws_auth_config.yaml
+
+  - name: cert-manager
+    namespace: ${env:CERT_MANAGER_NAMESPACE}
+    location: cert-manager
+    enabled: "${env:CERT_MANAGER_ENABLED}"
+    repo: https://charts.jetstack.io
+    values_template: deploy/helm/values/cert_manager.yaml
+    version: v1.15.1
+
+  - name: cert-manager-default-tls
+    # We want to deploy the Issuer, Secret, and Cert into the Nginx Namespace
+    namespace: ${env:INGRESS_NGINX_NAMESPACE}
+    location: ./deploy/helm/charts
+    enabled: ${env:CERT_MANAGER_ENABLED}
+    values_template: deploy/helm/values/cert_manager_default_tls.yaml
+
+  - name: hierarchical-namespaces
+    namespace: hierarchical-namespaces
+    location: https://github.com/kubernetes-sigs/hierarchical-namespaces/releases/download/v1.1.0/default.yaml
+    enabled: true
+    wrap_raw_yaml: true
+
+  - name: ingress-nginx
+    namespace: ${env:INGRESS_NGINX_NAMESPACE}
+    location: ingress-nginx
+    enabled: "${env:INGRESS_NGINX_ENABLED}"
+    repo: https://kubernetes.github.io/ingress-nginx
+    values_template: deploy/helm/values/ingress_nginx.yaml
+    version: 4.3.0

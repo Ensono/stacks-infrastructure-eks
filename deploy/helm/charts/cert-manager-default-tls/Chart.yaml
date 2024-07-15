@@ -1,0 +1,7 @@
+apiVersion: v2
+name: cert-manager-default-tls
+description: Extra Resources needed to generate a default certificate for nginx to use
+
+type: application
+
+version: 0.1.0

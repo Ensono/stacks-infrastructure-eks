@@ -1,0 +1,8 @@
+acme:
+  email: ${env:CERT_MANAGER_EMAIL_ADDRESS}
+
+aws:
+  region: ${env:REGION}
+
+certificate:
+  dnsName: ${env:CERT_MANAGER_DNS_NAME}

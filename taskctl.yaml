@@ -15,17 +15,20 @@ pipelines:
   setup:
     - task: buildnumber
 
-  lint:
+  yaml-lint:
     - task: lint:yaml
+
+  terraform-lint:
     - task: lint:terraform:format
     - task: lint:terraform:validate
+      depends_on: lint:terraform:format
 
-  # Pipeline to ensure that the infrastructure is valid
   infrastructure:
     - task: infra:init
     - task: infra:plan
       depends_on: infra:init
     - task: infra:apply
       depends_on: infra:plan
+
+  helm:
     - task: infra:helm:apply
-      depends_on: infra:apply
