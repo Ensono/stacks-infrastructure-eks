@@ -1,6 +1,5 @@
 module "amido_stacks_infra" {
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=featuer/togglenaming"
-  # source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v1.5.5"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v5.0.5"
 
   # Deployment Region
   region = var.region
@@ -14,7 +13,10 @@ module "amido_stacks_infra" {
   eks_node_size                   = var.eks_node_size
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_single_az               = var.cluster_single_az
 
-  # Pass Non-default Tag Values to Underlying Modules
+  vpc_id              = module.vpc.id
+  vpc_private_subnets = module.vpc.private_subnet_ids
+
   tags = local.default_tags
 }
