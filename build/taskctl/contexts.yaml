@@ -21,7 +21,6 @@ contexts:
         - -NonInteractive
         - -Command
     quote: "'"
-    # before: env | grep -v PATH | grep -v SOURCEVERSIONMESSAGE | grep -v HOME > envfile
     envfile:
       generate: true
       exclude:
