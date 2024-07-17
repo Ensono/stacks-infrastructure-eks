@@ -179,7 +179,7 @@ jobs:
           CERT_MANAGER_DNS_NAME: ${{ env.NON_PROD_DOMAIN_NAME }}
 
   InfraProd:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref != 'refs/heads/main'
     needs: Lint
     runs-on: ubuntu-24.04
     environment: prod
