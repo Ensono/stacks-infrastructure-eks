@@ -20,7 +20,7 @@ variable "name_environment" {
 
 variable "region" {
   type        = string
-  description = "Name of the AWS Region for Deployment."
+  description = "Name of the AWS Region for Deployment"
 }
 
 ########################################
@@ -62,22 +62,27 @@ variable "firewall_create_tls_alert_rule" {
 
 variable "cluster_version" {
   type        = string
-  description = "Cluster Kubernetes Version."
+  description = "Cluster Kubernetes Version"
 }
 
 variable "cluster_single_az" {
   type        = bool
-  description = "Switch to only deploy cluster to a single AZ."
+  description = "Switch to only deploy cluster to a single AZ"
 }
 
 variable "cluster_endpoint_private_access" {
   type        = bool
-  description = "Switch to enable private access."
+  description = "Switch to enable private access"
 }
 
 variable "cluster_endpoint_public_access" {
   type        = bool
-  description = "Switch to enable public access."
+  description = "Switch to enable public access"
+}
+
+variable "cluster_enable_container_insights" {
+  type        = bool
+  description = "Whether to install the the Amazon CloudWatch Observability addon to the EKS cluster for Metrics and Application Log Collection"
 }
 
 variable "eks_minimum_nodes" {
@@ -97,7 +102,7 @@ variable "eks_maximum_nodes" {
 
 variable "eks_node_size" {
   type        = string
-  description = "Configure desired spec of nodes for the cluster."
+  description = "Configure desired spec of nodes for the cluster"
 }
 
 ########################################
