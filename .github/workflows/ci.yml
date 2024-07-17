@@ -44,8 +44,11 @@ env:
   NON_PROD_CLUSTER_SINGLE_AZ: true
   PROD_CLUSTER_SINGLE_AZ: false
 
-  EKS_MINIMUM_NODES: "2"
-  EKS_DESIRED_NODES: "2"
+  NON_PROD_EKS_MINIMUM_NODES: "2"
+  ## Prod is in all AZs so that's 1*<AZ Count Machines>
+  PROD_EKS_MINIMUM_NODES: "1"
+  NON_PROD_EKS_DESIRED_NODES: "2"
+  PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
   EKS_NODE_SIZE: "t3.small"
 
@@ -158,8 +161,8 @@ jobs:
           TF_VAR_cluster_single_az: ${{ env.NON_PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
-          TF_VAR_eks_minimum_nodes: ${{ env.EKS_MINIMUM_NODES }}
-          TF_VAR_eks_desired_nodes: ${{ env.EKS_DESIRED_NODES }}
+          TF_VAR_eks_minimum_nodes: ${{ env.NON_PROD_EKS_MINIMUM_NODES }}
+          TF_VAR_eks_desired_nodes: ${{ env.NON_PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
@@ -241,8 +244,8 @@ jobs:
           TF_VAR_cluster_single_az: ${{ env.PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
-          TF_VAR_eks_minimum_nodes: ${{ env.EKS_MINIMUM_NODES }}
-          TF_VAR_eks_desired_nodes: ${{ env.EKS_DESIRED_NODES }}
+          TF_VAR_eks_minimum_nodes: ${{ env.PROD_EKS_MINIMUM_NODES }}
+          TF_VAR_eks_desired_nodes: ${{ env.PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
