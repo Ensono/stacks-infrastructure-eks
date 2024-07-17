@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "k8s_role_assume" {
 resource "aws_iam_role" "k8s_role" {
   for_each = local.k8s_role_map
 
-  name = "Kubernetes-Cluster-${each.value.role_name}"
+  name = "${var.name_environment}-Kubernetes-Cluster-${each.value.role_name}"
   path = "/"
 
   max_session_duration = each.value.max_session_duration
