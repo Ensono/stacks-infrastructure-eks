@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "ecr_pull_push" {
 
 resource "aws_iam_policy" "ecr_pull_push" {
   count       = var.container_registry_pull_push_user ? 1 : 0
-  name        = "${name_environment}-ecr-pull-push"
+  name        = "${var.name_environment}-ecr-pull-push"
   description = "A policy to allow the `${var.name_environment}-ecr-pull-push` user to auth to the ECR"
   policy      = data.aws_iam_policy_document.ecr_pull_push[0].json
 }
