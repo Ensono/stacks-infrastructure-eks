@@ -16,18 +16,16 @@ tasks:
       - Invoke-YamlLint
 
   lint:terraform:format:
-
-
     context: powershell
     description: Perform Terraform format check
     command:
-      - Invoke-Terraform -Format -Path $env:TF_FILE_LOCATION
+      - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
 
   lint:terraform:validate:
     context: powershell
     description: Perform Terraform validation
     command:
-      - Invoke-Terraform -Validate -Path $env:TF_FILE_LOCATION
+      - Invoke-Terraform -Validate -Path ${env:TF_FILE_LOCATION}
 
   # Infrastructure tasks
   infra:init:
@@ -95,7 +93,6 @@ tasks:
 
         Write-Host "Make sure to add these Name Servers to an NS record for '${TF_VAR_dns_hostedzone_name}.' with the values:`n${env:TFOUT_dns_hostedzone_ns_records}"
 
-
   # publish:github:
   #   context: powershell
   #   description: Publish Release to GitHub
@@ -104,30 +101,3 @@ tasks:
   #   env:
   #     generateReleaseNotes: $true
   #     #  PUBLISH_RELEASE: $true
-
-  # update:dashboard:
-  #   context: powershell
-  #   description: Update the Deployment Dashboard
-  #   command:
-  #     - Update-InfluxDashboard
-  #   # env:
-  #   #  PUBLISH_RELEASE: $true
-
-  # debug:env:
-  #   context: powershell
-  #   description: Debugging task to show the environment variables in the container
-  #   command:
-  #     - dir env:/
-
-  # debug:location:
-  #   context: powershell
-  #   command:
-  #     - Write-Host "***** DEBUG *****" && get-childitem -filter "*opencover.xml" -recurse
-
-  # debug:sleep:
-  #   context: powershell
-  #   command:
-  #     - echo "Sleeping for {{ .sleep }}"
-  #     - sleep {{ .sleep }}
-  #   variables:
-  #     sleep: 30

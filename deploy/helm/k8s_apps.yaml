@@ -32,4 +32,4 @@ charts:
     enabled: "${env:INGRESS_NGINX_ENABLED}"
     repo: https://kubernetes.github.io/ingress-nginx
     values_template: deploy/helm/values/ingress_nginx.yaml
-    version: 4.3.0
+    version: 4.11.0

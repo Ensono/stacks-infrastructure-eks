@@ -178,39 +178,85 @@ jobs:
           # Helm Config
           CERT_MANAGER_DNS_NAME: ${{ env.NON_PROD_DOMAIN_NAME }}
 
-# InfraProd:
-#   if: github.ref == 'refs/heads/main'
-#   needs: Lint
-#   runs-on: ubuntu-24.04
-#   environment: prod
-#   steps:
-#     - uses: actions/checkout@v4
+  InfraProd:
+    if: github.ref == 'refs/heads/main'
+    needs: Lint
+    runs-on: ubuntu-24.04
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
 
-#     - uses: ./build/github/templates/install-taskctl
-#     - run: taskctl -d infrastructure
-#       env:
-#         ENV_NAME: prod
-#         # AWS Environmental Config
-#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#         AWS_DEFAULT_REGION: ${{ env.REGION }}
-#         # Terraform Backend Configuration
-#         AWS_TF_STATE_BUCKET: ${{ secrets.AWS_TF_STATE_BUCKET }}
-#         AWS_TF_STATE_DYNAMOTABLE: ${{ secrets.AWS_TF_STATE_DYNAMOTABLE }}
-#         AWS_TF_STATE_ENCRYPTION: ${{ secrets.AWS_TF_STATE_ENCRYPTION }}
-#         AWS_TF_STATE_KEY: ${{ secrets.AWS_TF_STATE_KEY }}
-#         AWS_TF_STATE_REGION: ${{ secrets.AWS_TF_STATE_REGION }}
-#         TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
-#         TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ secrets.AWS_TF_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
-#         # Terraform Resource Configuration
-#         TF_VAR_name_environment: "prod"
-#         TF_VAR_name_company: ${{ env.COMPANY }}
-#         TF_VAR_name_project: ${{ env.PROJECT }}
-#         TF_VAR_name_component: ${{ env.COMPONENT }}
-#         TF_VAR_region: ${{ env.REGION }}
-#         TF_VAR_dns_hostedzone_name: "${{ env.PROD_BASE_DOMAIN_NAME }}"
-#         TF_VAR_enable_zone: true
-#         TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
-#         TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
-#         TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
-#         TF_VAR_firewall_enabled: "true"
+      - uses: ./build/github/templates/install-taskctl
+
+      - run: taskctl image-pull
+
+      - name: Pre-Infrastructure Deploy
+        run: |
+          taskctl infrastructure
+          taskctl pre-infra:post-deploy
+        env:
+          ENV_NAME: prod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Terraform Backend Configuration
+          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          # Terraform Resource Configuration
+          TF_VAR_name_company: ${{ env.COMPANY }}
+          TF_VAR_name_project: ${{ env.PROJECT }}
+          TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_name_environment: "prod"
+          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_dns_create_hostedzone: ${{ env.DNS_CREATE_HOSTEDZONE}}
+          TF_VAR_dns_hostedzone_name: ${{ env.PROD_DOMAIN_NAME }}
+          TF_VAR_dns_create_hostedzone_parent_link: ${{ env.DNS_CREATE_HOSTEDZONE_PARENT_LINK }}
+          TF_VAR_dns_parent_hostedzone_name: ${{ env.DNS_PARENT_NAME }}
+          TF_VAR_k8s_role_file_map: "[\"../../k8s/users/prod-admin-users.json\", \"../../k8s/users/prod-developer-users.json\"]"
+          TF_VAR_container_registry_pull_push_user: ${{ env.CONTAINER_REGISTRY_PULL_PUSH_USER }}
+
+      - name: Infrastructure Deploy
+        run: taskctl infrastructure
+        env:
+          ENV_NAME: prod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Terraform Backend Configuration
+          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
+          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          # Terraform Resource Configuration
+          TF_VAR_name_company: ${{ env.COMPANY }}
+          TF_VAR_name_project: ${{ env.PROJECT }}
+          TF_VAR_name_component: ${{ env.COMPONENT }}
+          TF_VAR_name_environment: "prod"
+          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_vpc_cidr: ${{ env.VPC_CIDR }}
+          TF_VAR_vpc_nat_gateway_per_az: ${{ env.PROD_VPC_NAT_GATEWAY_PER_AZ }}
+          TF_VAR_firewall_enabled: ${{ env.PROD_FIREWALL_ENABLED }}
+          TF_VAR_firewall_allowed_domain_targets: ${{ env.FIREWALL_ALLOWED_DOMAIN_TARGETS }}
+          TF_VAR_firewall_create_tls_alert_rule: ${{ env.PROD_FIREWALL_CREATE_TLS_ALERT_RULE }}
+          TF_VAR_cluster_version: ${{ env.CLUSTER_VERSION }}
+          TF_VAR_cluster_single_az: ${{ env.PROD_CLUSTER_SINGLE_AZ }}
+          TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
+          TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
+          TF_VAR_eks_minimum_nodes: ${{ env.EKS_MINIMUM_NODES }}
+          TF_VAR_eks_desired_nodes: ${{ env.EKS_DESIRED_NODES }}
+          TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
+          TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
+          TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
+          TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
+
+      - name: Helm Deploy
+        run: taskctl -d helm
+        env:
+          ENV_NAME: prod
+          # AWS Environmental Config
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.REGION }}
+          # Helm Config
+          CERT_MANAGER_DNS_NAME: ${{ env.PROD_DOMAIN_NAME }}
