@@ -1,7 +1,7 @@
 # IAM User for pushing
 resource "aws_iam_user" "ecr_pull_push" {
   count = var.container_registry_pull_push_user ? 1 : 0
-  name  = "ecr-pull-push"
+  name  = "${var.name_environment}-ecr-pull-push"
   path  = "/ecr/"
 }
 
@@ -12,7 +12,7 @@ resource "aws_iam_access_key" "ecr_pull_push" {
 
 resource "aws_iam_group" "ecr_pull_push" {
   count = var.container_registry_pull_push_user ? 1 : 0
-  name  = "ecr-pull-push"
+  name  = "${var.name_environment}-ecr-pull-push"
   path  = "/ecr/"
 }
 
@@ -29,6 +29,7 @@ resource "aws_iam_group_membership" "ecr_pull_push" {
 
 data "aws_iam_policy_document" "ecr_pull_push" {
   count = var.container_registry_pull_push_user ? 1 : 0
+
   statement {
     effect = "Allow"
 
@@ -40,8 +41,8 @@ data "aws_iam_policy_document" "ecr_pull_push" {
 
 resource "aws_iam_policy" "ecr_pull_push" {
   count       = var.container_registry_pull_push_user ? 1 : 0
-  name        = "ecr-pull-push"
-  description = "A policy to allow the `ecr-pull-push` user to auth to the ECR"
+  name        = "${name_environment}-ecr-pull-push"
+  description = "A policy to allow the `${var.name_environment}-ecr-pull-push` user to auth to the ECR"
   policy      = data.aws_iam_policy_document.ecr_pull_push[0].json
 }
 
