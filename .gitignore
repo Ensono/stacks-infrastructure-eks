@@ -47,6 +47,6 @@ Thumbs.db
 
 # Taskctl Build
 envfile
-.env
+.env*
 /tmp
 tfplan
