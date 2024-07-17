@@ -12,12 +12,9 @@ env:
   # The following SECRETS must be defined per environment (which must match environment key) in your GH Repository:
   #   AWS_ACCESS_KEY_ID
   #   AWS_ACCOUNT_ID
-  #   AWS_DEFAULT_REGION
   #   AWS_SECRET_ACCESS_KEY
   #   AWS_TF_STATE_BUCKET
   #   AWS_TF_STATE_DYNAMOTABLE
-  #   AWS_TF_STATE_ENCRYPTION
-  #   AWS_TF_STATE_REGION
   CLOUD_PROVIDER: "aws"
   TaskctlVersion: '1.5.1'
   COMPANY: "ensono"
@@ -29,6 +26,8 @@ env:
   TF_PRE_INFRA_FILE_LOCATION: deploy/aws/pre-infra
   AWS_TF_PRE_INFRA_STATE_KEY: stacks-infrastructure-eks-pre
   AWS_TF_INFRA_STATE_KEY: stacks-infrastructure-eks
+
+  AWS_TF_STATE_REGION: eu-west-2
 
   VPC_CIDR: "10.0.0.0/16"
   NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
@@ -119,7 +118,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
           TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -143,7 +142,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
           TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -168,7 +167,7 @@ jobs:
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
 
       - name: Helm Deploy
-        run: taskctl -d helm
+        run: taskctl helm
         env:
           ENV_NAME: nonprod
           # AWS Environmental Config
@@ -202,7 +201,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
           TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -226,7 +225,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
           TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
-          TF_BACKEND_ARGS: region=${{ secrets.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=${{ secrets.AWS_TF_STATE_ENCRYPTION }}
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -251,7 +250,7 @@ jobs:
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
 
       - name: Helm Deploy
-        run: taskctl -d helm
+        run: taskctl helm
         env:
           ENV_NAME: prod
           # AWS Environmental Config
