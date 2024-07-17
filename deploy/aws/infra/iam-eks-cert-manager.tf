@@ -43,7 +43,7 @@ module "cert_manager_irsa_iam_role" {
   source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v5.0.5"
 
   cluster_name            = module.default_label.id
-  cluster_oidc_issuer_url = module.amido_stacks_infra.cluster_oidc_issuer_url
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
   aws_account_id          = local.account_id
   namespace               = var.cert_manager_namespace
   service_account_name    = var.cert_manager_service_account_name

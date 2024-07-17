@@ -54,6 +54,7 @@ env:
 
   CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
   CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
+  CLUSTER_ENABLE_CONTAINER_INSIGHTS: true
 
   CONTAINER_REGISTRY_PULL_PUSH_USER: true
 
@@ -161,6 +162,7 @@ jobs:
           TF_VAR_cluster_single_az: ${{ env.NON_PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
+          TF_VAR_cluster_enable_container_insights: ${{ env.CLUSTER_ENABLE_CONTAINER_INSIGHTS }}
           TF_VAR_eks_minimum_nodes: ${{ env.NON_PROD_EKS_MINIMUM_NODES }}
           TF_VAR_eks_desired_nodes: ${{ env.NON_PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
@@ -244,6 +246,7 @@ jobs:
           TF_VAR_cluster_single_az: ${{ env.PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
+          TF_VAR_cluster_enable_container_insights: ${{ env.CLUSTER_ENABLE_CONTAINER_INSIGHTS }}
           TF_VAR_eks_minimum_nodes: ${{ env.PROD_EKS_MINIMUM_NODES }}
           TF_VAR_eks_desired_nodes: ${{ env.PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
