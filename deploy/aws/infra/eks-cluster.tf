@@ -19,8 +19,3 @@ module "eks" {
 
   tags = local.default_tags
 }
-
-moved {
-  from = module.amido_stacks_infra
-  to   = module.eks
-}
