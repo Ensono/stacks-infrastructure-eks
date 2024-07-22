@@ -1,6 +1,5 @@
 module "eks" {
-  # TODO: Pin back to a known version after https://github.com/Ensono/stacks-terraform/pull/131/files goes in...
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=feature-cloudwatch-addon"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v5.0.21"
 
   region = var.region
 
