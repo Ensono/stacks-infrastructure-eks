@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ .Values.issuer.name }}
+spec:
+  acme:
+    server: {{ .Values.acme.server }}
+    email: {{ .Values.acme.email }}
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+      - dns01:
+          route53:
+            region: {{ .Values.aws.region }}

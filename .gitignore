@@ -44,3 +44,9 @@ override.tf.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Taskctl Build
+envfile
+.env*
+/tmp
+tfplan

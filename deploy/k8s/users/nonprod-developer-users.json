@@ -1,0 +1,7 @@
+{
+    "role_name": "Developers",
+    "role_prefix": "arn:aws:sts::<ACCOUNT_ID>:assumed-role/Okta-Ensono-Digital-Contributor",
+    "max_session_duration": 14400,
+    "k8s_group_name": "system:edit",
+    "users": []
+}
