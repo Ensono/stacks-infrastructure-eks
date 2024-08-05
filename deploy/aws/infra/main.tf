@@ -7,5 +7,3 @@ module "default_label" {
   delimiter   = "-"
   tags        = local.default_tags
 }
-
-data "aws_caller_identity" "current" {}

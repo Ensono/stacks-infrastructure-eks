@@ -21,7 +21,6 @@ env:
   PROJECT: "stacks"
   COMPONENT: "eks"
   REGION: "eu-west-2"
-  NON_PROD_AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   TF_INFRA_FILE_LOCATION: deploy/aws/infra
   TF_PRE_INFRA_FILE_LOCATION: deploy/aws/pre-infra
   AWS_TF_PRE_INFRA_STATE_KEY: stacks-infrastructure-eks-pre
