@@ -1,0 +1,29 @@
+contexts:
+  powershell:
+    executable:
+      bin: docker
+      args:
+        - run
+        - --rm
+        - -v
+        - ${PWD}:/app
+        - -v
+        - /var/run/docker.sock:/var/run/docker.sock
+        - -e
+        - PSModulePath=/modules
+        - -w
+        - /app
+        - --env-file
+        - envfile
+        - amidostacks/runner-pwsh:0.4.129-stable
+        - pwsh
+        - -NoProfile
+        - -NonInteractive
+        - -Command
+    quote: "'"
+    envfile:
+      generate: true
+      exclude:
+        - PATH
+        - SOURCEVERSIONMESSAGE
+        - HOME

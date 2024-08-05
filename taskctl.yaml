@@ -1,0 +1,34 @@
+# Import contexts and tasks for Taskctl
+import:
+  - ./build/taskctl/contexts.yaml
+  - ./build/taskctl/tasks.yaml
+
+watchers:
+  lint:
+    watch:
+      - '*.yml'
+      - '*.yaml'
+    events: [create, write]
+    task: lint:yaml
+
+pipelines:
+  setup:
+    - task: buildnumber
+
+  yaml-lint:
+    - task: lint:yaml
+
+  terraform-lint:
+    - task: lint:terraform:format
+    - task: lint:terraform:validate
+      depends_on: lint:terraform:format
+
+  infrastructure:
+    - task: infra:init
+    - task: infra:plan
+      depends_on: infra:init
+    - task: infra:apply
+      depends_on: infra:plan
+
+  helm:
+    - task: infra:helm:apply

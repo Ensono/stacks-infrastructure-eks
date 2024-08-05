@@ -1,0 +1,103 @@
+tasks:
+  image-pull:
+    context: powershell
+    command: ""
+
+  buildnumber:
+    context: powershell
+    description: Update the build number
+    command:
+      - Update-BuildNumber
+
+  lint:yaml:
+    context: powershell
+    description: Perform YAML linting
+    command:
+      - Invoke-YamlLint
+
+  lint:terraform:format:
+    context: powershell
+    description: Perform Terraform format check
+    command:
+      - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
+
+  lint:terraform:validate:
+    context: powershell
+    description: Perform Terraform validation
+    command:
+      - Invoke-Terraform -Validate -Path ${env:TF_FILE_LOCATION}
+
+  # Infrastructure tasks
+  infra:init:
+    context: powershell
+    description: Initialise Terraform for Azure
+    command:
+      - Invoke-Terraform -Init -Arguments "${env:TF_BACKEND_ARGS}" -Path ${env:TF_FILE_LOCATION} -Debug
+      - Invoke-Terraform -Workspace -Arguments ${env:ENV_NAME} -Path ${env:TF_FILE_LOCATION} -Debug
+
+  infra:plan:
+    context: powershell
+    description: Plan Terraform
+    command:
+      - Invoke-Terraform -Plan -Path $env:TF_FILE_LOCATION -Arguments "-input=false","-out=tfplan" -Debug
+
+  infra:apply:
+    context: powershell
+    description: Apply Terraform Plan
+    command:
+      - Push-Location $env:TF_FILE_LOCATION && Invoke-Terraform -Apply -Path tfplan -Debug
+
+  infra:destroy:
+    context: powershell
+    description: Destroy Terraform
+    command:
+      - Push-Location $env:TF_FILE_LOCATION && Invoke-Terraform -Custom -Arguments "destroy -auto-approve" -Debug
+
+  infra:helm:apply:
+    context: powershell
+    description: Deploy Helm charts to the cluster as defined by configuration file
+    command:
+      - |
+        $ErrorActionPreference = "Stop"
+
+        Write-Host "Getting 'pre-infra' Terraform Outputs..."
+        Invoke-Terraform -Output -Path ${env:TF_PRE_INFRA_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+
+        Write-Host "Getting 'infra' Terraform Outputs..."
+        Invoke-Terraform -Output -Path ${env:TF_INFRA_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+
+        # If we are not currently managing the Auth Config Map through Helm then remove it...
+        /app/build/scripts/Remove-AwsAuthConfigMap.ps1 `
+          -Identifier ${env:REGION} `
+          -ClusterName ${env:TFOUT_cluster_name}
+
+        /app/build/scripts/Deploy-HelmCharts.ps1 /app/deploy/helm/k8s_apps.yaml `
+          -Identifier ${env:REGION} `
+          -ClusterName ${env:TFOUT_cluster_name} `
+          -Provider ${env:CLOUD_PROVIDER} `
+          -K8sAuthRequired $false
+
+  pre-infra:post-deploy:
+    context: powershell
+    description: Apply Pre-Infra Terraform Plan
+    command:
+      - |
+        # If we do not create the DNS Zone, or we are linking the Environment
+        # Zone to the Parnet Zone then we do not need to echo the NS records
+        if ($false -eq ${env:TF_VAR_dns_create_hostedzone} -or $true -eq ${env:TF_VAR_dns_create_hostedzone_parent_link})
+        {
+          exit 0
+        }
+
+        Invoke-Terraform -Output -Path ${env:TF_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+
+        Write-Host "Make sure to add these Name Servers to an NS record for '${TF_VAR_dns_hostedzone_name}.' with the values:`n${env:TFOUT_dns_hostedzone_ns_records}"
+
+  # publish:github:
+  #   context: powershell
+  #   description: Publish Release to GitHub
+  #   command:
+  #     - Publish-GitHubRelease -artifactsList "$env:ARTIFACTS_LIST"
+  #   env:
+  #     generateReleaseNotes: $true
+  #     #  PUBLISH_RELEASE: $true

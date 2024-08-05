@@ -1,0 +1,15 @@
+crds:
+  enabled: true
+
+serviceAccount:
+  create: true
+  name: "${env:CERT_MANAGER_SERVICE_ACCOUNT_NAME}"
+  annotations:
+    eks.amazonaws.com/role-arn: "${env:TFOUT_cert_manager_role_arn}"
+
+# This securityContext is required, so the pod can access files required to assume the IAM role
+securityContext:
+  fsGroup: 1001
+
+extraArgs:
+  - --issuer-ambient-credentials=true

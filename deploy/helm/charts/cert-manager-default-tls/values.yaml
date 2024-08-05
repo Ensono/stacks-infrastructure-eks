@@ -1,0 +1,13 @@
+acme:
+  email: ''
+  server: https://acme-v02.api.letsencrypt.org/directory
+
+aws:
+  region:
+
+certificate:
+  dnsName: ''
+  secretName: 'default-tls-secret'
+
+issuer:
+  name: aws-dns-issuer

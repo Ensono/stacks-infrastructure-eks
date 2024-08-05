@@ -1,0 +1,9 @@
+{
+    "role_name": "Administrators",
+    "role_prefix": "arn:aws:sts::<ACCOUNT_ID>:assumed-role/Okta-Ensono-Digital",
+    "max_session_duration": 14400,
+    "k8s_group_name": "system:masters",
+    "users": [
+        "Jack.Blower@ensono.com"
+    ]
+}

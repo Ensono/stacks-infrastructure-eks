@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+data:
+  mapRoles: |
+    {{- range $key, $value := .Values.k8s_roles }}
+    - rolearn: {{ $value.role_arn | quote }}
+      username: {{ $key }}:{{"{{"}}SessionName}}
+      groups:
+        - {{ $value.k8s_group_name }}
+    {{- end }}
