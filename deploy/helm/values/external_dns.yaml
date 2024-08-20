@@ -7,7 +7,7 @@ env:
 serviceAccount:
   create: true
   name: "${env:EXTERNAL_DNS_SERVICE_ACCOUNT_NAME}"
-  annotations: 
+  annotations:
     eks.amazonaws.com/role-arn: "${env:TFOUT_external_dns_role_arn}"
 
 podSecurityContext:
