@@ -3,7 +3,7 @@ name: air.stacks-infrastructure-eks
 on:
   push:
     branches:
-      - main
+      - feat/external-dns
   pull_request:
     branches:
       - main
