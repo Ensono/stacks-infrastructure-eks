@@ -123,3 +123,22 @@ variable "cert_manager_namespace" {
   type        = string
   description = "The Namespace that Cert Manager will be deployed to"
 }
+
+########################################
+# External DNS IAM IRSA
+########################################
+
+variable "external_dns_enabled" {
+  type        = bool
+  description = "Whether to enable External DNS or not"
+}
+
+variable "external_dns_service_account_name" {
+  type        = string
+  description = "The Kubernetes Service Account name for External DNS"
+}
+
+variable "external_dns_namespace" {
+  type        = string
+  description = "The Namespace that External DNS will be deployed to"
+}

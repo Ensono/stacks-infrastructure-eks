@@ -33,3 +33,11 @@ charts:
     repo: https://kubernetes.github.io/ingress-nginx
     values_template: deploy/helm/values/ingress_nginx.yaml
     version: 4.11.0
+
+  - name: external-dns
+    namespace: external-dns
+    location: external-dns
+    enabled: "${env:EXTERNAL_DNS_ENABLED}"
+    repo: https://charts.bitnami.com/bitnami
+    values_template: deploy/helm/values/external_dns.yaml
+    version: 8.3.5
