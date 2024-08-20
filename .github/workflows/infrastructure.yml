@@ -75,6 +75,11 @@ env:
   CERT_MANAGER_SERVICE_ACCOUNT_NAME: "cert-manager"
   CERT_MANAGER_EMAIL_ADDRESS: "stacks@ensono.com"
 
+  # External DNS Helm
+  EXTERNAL_DNS_ENABLED: true
+  EXTERNAL_DNS_NAMESPACE: "external-dns"
+  EXTERNAL_DNS_SERVICE_ACCOUNT_NAME: "external-dns"
+
 jobs:
   Lint:
     runs-on: ubuntu-24.04
@@ -169,6 +174,9 @@ jobs:
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
+          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
+          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
 
       - name: Helm Deploy
         run: taskctl helm
@@ -253,6 +261,9 @@ jobs:
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
+          TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
+          TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
 
       - name: Helm Deploy
         run: taskctl helm

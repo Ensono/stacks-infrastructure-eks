@@ -65,3 +65,11 @@ output "cert_manager_role_arn" {
   description = "The ARN of the AWS Role created for cert-manager to use"
   value       = module.cert_manager_irsa_iam_role[0].irsa_role_arn
 }
+
+####################
+# External DNS IRSA
+####################
+output "external_dns_role_arn" {
+  description = "The ARN of the AWS Role created for external-dns to use"
+  value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
+}
