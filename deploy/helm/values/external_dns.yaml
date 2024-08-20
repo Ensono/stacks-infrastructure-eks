@@ -12,3 +12,5 @@ serviceAccount:
 
 podSecurityContext:
   fsGroup: 1001
+
+txtOwnerId: "${env:TFOUT_cluster_name}-external-dns"
