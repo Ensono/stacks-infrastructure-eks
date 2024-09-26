@@ -19,8 +19,8 @@ tasks:
     context: powershell
     description: Perform Terraform format check
     command:
-      - ls /app
-      - ls ${env:TF_FILE_LOCATION}
+      - ls -la /app
+      - ls -la ${env:TF_FILE_LOCATION}
       - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
 
   lint:terraform:validate:
