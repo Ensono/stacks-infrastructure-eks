@@ -19,9 +19,9 @@ tasks:
     context: powershell
     description: Perform Terraform format check
     command:
-      - ls -la /app
-      - ls -la ${env:TF_FILE_LOCATION}
+      - env
       - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
+      - cd ${env:TF_FILE_LOCATION}; TF_LOG="trace" terraform fmt -diff -check -recursive
 
   lint:terraform:validate:
     context: powershell
