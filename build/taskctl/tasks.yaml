@@ -17,9 +17,10 @@ tasks:
 
   lint:terraform:format:
     context: powershell
-    description: Perform T                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           erraform format check
+    description: Perform Terraform format check
     command:
       - env
+      - terraform -version
       - cd ${env:TF_FILE_LOCATION}; $env:TF_LOG="trace"; terraform fmt -diff -check -recursive
       - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
 
