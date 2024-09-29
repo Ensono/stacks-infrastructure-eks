@@ -19,10 +19,7 @@ tasks:
     context: powershell
     description: Perform Terraform format check
     command:
-      - |
-        curl -L https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -o terraform_1.5.7_linux_amd64.zip
-        unzip terraform_1.5.7_linux_amd64.zip
-        ./terraform -version
+      - cd ${env:TF_FILE_LOCATION}; $env:TF_LOG="trace"; /usr/local/tenv/.tenv/Terraform/1.5.7/terraform fmt -diff -check -recursive
       - cd ${env:TF_FILE_LOCATION}; $env:TF_LOG="trace"; terraform fmt -diff -check -recursive
       - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
 
