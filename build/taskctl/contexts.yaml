@@ -24,4 +24,4 @@ contexts:
         - PATH
         - SOURCEVERSIONMESSAGE
         - HOME
-        - GITHUB_OUTPUT
+        # - GITHUB_OUTPUT
