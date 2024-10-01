@@ -9,15 +9,12 @@ contexts:
         - ${PWD}:/app
         - -v
         - /var/run/docker.sock:/var/run/docker.sock
-        - -e
-        - PSModulePath=/modules
         - -w
         - /app
         - --env-file
         - envfile
-        - amidostacks/runner-pwsh:0.4.129-stable
+        - ensono/eir-infrastructure:1.1.251
         - pwsh
-        - -NoProfile
         - -NonInteractive
         - -Command
     quote: "'"
@@ -27,3 +24,5 @@ contexts:
         - PATH
         - SOURCEVERSIONMESSAGE
         - HOME
+        # TODO: `tenv` is broken currently for taskctl: https://github.com/tofuutils/tenv/issues/257
+        - GITHUB_ACTIONS
