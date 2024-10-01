@@ -16,7 +16,7 @@ env:
   #   AWS_TF_STATE_BUCKET
   #   AWS_TF_STATE_DYNAMOTABLE
   CLOUD_PROVIDER: "aws"
-  TaskctlVersion: '1.5.1'
+  TaskctlVersion: '1.7.1'
   COMPANY: "ensono"
   PROJECT: "stacks"
   COMPONENT: "eks"
