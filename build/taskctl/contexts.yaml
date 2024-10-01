@@ -24,4 +24,5 @@ contexts:
         - PATH
         - SOURCEVERSIONMESSAGE
         - HOME
+        # TODO: `tenv` is broken currently for taskctl: https://github.com/tofuutils/tenv/issues/257
         - GITHUB_ACTIONS
