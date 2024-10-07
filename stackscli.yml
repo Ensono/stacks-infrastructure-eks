@@ -1,0 +1,12 @@
+pipeline:
+  - type: gha
+    files:
+      - name: variable
+        path: .github/workflows/infrastructure.env
+    templates:
+      - name: variable
+        path: build/github/aws/infrastructure.env
+
+setup:
+  operations:
+    - action: copy
