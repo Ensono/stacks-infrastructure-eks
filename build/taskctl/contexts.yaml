@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/taskctl/refs/heads/master/schemas/schema_v1.json
+
 contexts:
   powershell:
     executable:
@@ -13,7 +15,7 @@ contexts:
         - /app
         - --env-file
         - envfile
-        - ensono/eir-infrastructure:1.1.251
+        - ensono/eir-infrastructure:1.1.257
         - pwsh
         - -NonInteractive
         - -Command
@@ -24,5 +26,3 @@ contexts:
         - PATH
         - SOURCEVERSIONMESSAGE
         - HOME
-        # TODO: `tenv` is broken currently for taskctl: https://github.com/tofuutils/tenv/issues/257
-        - GITHUB_ACTIONS
