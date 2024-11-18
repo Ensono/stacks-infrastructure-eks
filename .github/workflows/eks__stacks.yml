@@ -1,0 +1,81 @@
+name: eks:stacks
+"on":
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  Lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install taskctl
+      id: install-taskctl
+      run: |-
+        rm -rf /tmp/taskctl-linux-amd64-v1.8.0-alpha-aaaabbbb1234
+        wget https://github.com/Ensono/taskctl/releases/download/v1.8.0-alpha-aaaabbbb1234/taskctl-linux-amd64 -O /tmp/taskctl-linux-amd64-v1.8.0-alpha-aaaabbbb1234
+        cp /tmp/taskctl-linux-amd64-v1.8.0-alpha-aaaabbbb1234 /usr/local/bin/taskctl
+        chmod u+x /usr/local/bin/taskctl
+      shell: bash
+    - name: set:env:vars
+      id: set__env__vars
+      run: taskctl run task set:env:vars
+    - name: image-pull
+      id: image-pull
+      run: taskctl run task image-pull
+    - name: lint:yaml
+      id: lint__yaml
+      run: taskctl run task lint:yaml
+    - name: lint:terraform:format
+      id: lint__terraform__format
+      run: taskctl run task lint:terraform:format
+    - name: lint:terraform:validate
+      id: lint__terraform__validate
+      run: taskctl run task lint:terraform:validate
+    - name: lint:terraform:format
+      id: lint__terraform__format
+      run: taskctl run task lint:terraform:format
+    - name: lint:terraform:validate
+      id: lint__terraform__validate
+      run: taskctl run task lint:terraform:validate
+env:
+  CERT_MANAGER_ENABLED: true
+  CERT_MANAGER_NAMESPACE: cert-manager
+  CERT_MANAGER_SERVICE_ACCOUNT_NAME: cert-manager
+  CLOUD_PROVIDER: aws
+  CLUSTER_ENABLE_CONTAINER_INSIGHTS: true
+  CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
+  CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
+  CLUSTER_VERSION: "1.30"
+  CONTAINER_REGISTRY_PULL_PUSH_USER: true
+  DNS_CREATE_HOSTEDZONE: true
+  DNS_CREATE_HOSTEDZONE_PARENT_LINK: true
+  EKS_MAXIMUM_NODES: "3"
+  EKS_NODE_SIZE: t3.small
+  EXTERNAL_DNS_ENABLED: true
+  EXTERNAL_DNS_NAMESPACE: external-dns
+  EXTERNAL_DNS_SERVICE_ACCOUNT_NAME: external-dns
+  FIREWALL_ALLOWED_DOMAIN_TARGETS: '[]'
+  INGRESS_NGINX_ENABLED: true
+  INGRESS_NGINX_NAMESPACE: ingress-nginx
+  INGRESS_NGINX_REPLICA_COUNT: 3
+  INGRESS_NGINX_SERVICE_ACCOUNT_NAME: ingress-nginx
+  NON_PROD_CLUSTER_SINGLE_AZ: true
+  NON_PROD_EKS_DESIRED_NODES: "2"
+  NON_PROD_EKS_MINIMUM_NODES: "2"
+  NON_PROD_FIREWALL_CREATE_TLS_ALERT_RULE: false
+  NON_PROD_FIREWALL_ENABLED: false
+  NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
+  PROD_CLUSTER_SINGLE_AZ: false
+  PROD_EKS_DESIRED_NODES: "1"
+  PROD_EKS_MINIMUM_NODES: "1"
+  PROD_FIREWALL_CREATE_TLS_ALERT_RULE: true
+  PROD_FIREWALL_ENABLED: true
+  PROD_VPC_NAT_GATEWAY_PER_AZ: true
+  TF_INFRA_FILE_LOCATION: deploy/aws/infra
+  TF_PRE_INFRA_FILE_LOCATION: deploy/aws/pre-infra
+  TaskctlVersion: 1.7.2
+  VPC_CIDR: 10.0.0.0/16
