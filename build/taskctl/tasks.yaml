@@ -20,6 +20,10 @@ tasks:
     description: Perform Terraform format check
     command:
       - Invoke-Terraform -Format -Path ${env:TF_FILE_LOCATION}
+    # variations:
+    #   - TF_FILE_LOCATION: location/file/1
+    #   - TF_FILE_LOCATION: location/file/2
+
 
   lint:terraform:validate:
     context: powershell
@@ -101,3 +105,7 @@ tasks:
   #   env:
   #     generateReleaseNotes: $true
   #     #  PUBLISH_RELEASE: $true
+  set:env:vars:
+    command:
+      - cat .github/workflows/infrastructure.env >> $GITHUB_ENV
+
