@@ -60,8 +60,6 @@ tasks:
     description: Deploy Helm charts to the cluster as defined by configuration file
     command:
       - |
-        $ErrorActionPreference = "Stop"
-
         Write-Host "Getting 'pre-infra' Terraform Outputs..."
         Invoke-Terraform -Output -Path ${env:TF_PRE_INFRA_FILE_LOCATION} | /app/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
 
