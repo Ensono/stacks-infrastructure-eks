@@ -147,7 +147,7 @@ if ([String]::IsNullOrEmpty($Prefix)) {
 
 # Find the Terraform command to use
 if ([String]::IsNullOrEmpty($Version)) {
-	$terraform = Find-Command -Name "terraform"
+	$terraform = "/usr/local/tenv/bin/terraform"
 } else {
 
 	# A version has been specified so build up the path to the specified
