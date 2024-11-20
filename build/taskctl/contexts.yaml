@@ -26,3 +26,4 @@ contexts:
         - PATH
         - SOURCEVERSIONMESSAGE
         - HOME
+        - GITHUB_ACTIONS
