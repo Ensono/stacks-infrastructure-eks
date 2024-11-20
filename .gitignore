@@ -50,4 +50,4 @@ envfile
 .env*
 /tmp
 tfplan
-.taskctl/generated_3cWE8rzz3et2QDIZaOa7eF.env
+.taskctl/
