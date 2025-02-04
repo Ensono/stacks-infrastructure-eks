@@ -6,9 +6,14 @@ contexts:
       name: ensono/eir-infrastructure:1.1.257
       shell: pwsh
       shell_args: [
-        "-NoProfile",
         "-NonInteractive",
         "-Command"
       ]
     env:
       PSModulePath: /modules
+    envfile:
+      exclude:
+        - PATH
+        - SOURCEVERSIONMESSAGE
+        - HOME
+        - GITHUB_ACTIONS
