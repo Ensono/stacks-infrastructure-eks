@@ -61,21 +61,10 @@ tasks:
     command:
       - |
         Write-Host "Getting 'pre-infra' Terraform Outputs..."
-        Invoke-Terraform -Output -Path ${env:TF_PRE_INFRA_FILE_LOCATION} | /workspace/.taskctl/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
+        Invoke-Terraform -Output -Path ${env:TF_PRE_INFRA_FILE_LOCATION}
 
         Write-Host "Getting 'infra' Terraform Outputs..."
-        Invoke-Terraform -Output -Path ${env:TF_INFRA_FILE_LOCATION} | /workspace/.taskctl/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
-
-        # If we are not currently managing the Auth Config Map through Helm then remove it...
-        /workspace/.taskctl/build/scripts/Remove-AwsAuthConfigMap.ps1 `
-          -Identifier ${env:REGION} `
-          -ClusterName ${env:TFOUT_cluster_name}
-
-        /workspace/.taskctl/build/scripts/Deploy-HelmCharts.ps1 /workspace/.taskctl/deploy/helm/k8s_apps.yaml `
-          -Identifier ${env:REGION} `
-          -ClusterName ${env:TFOUT_cluster_name} `
-          -Provider ${env:CLOUD_PROVIDER} `
-          -K8sAuthRequired $false
+        Invoke-Terraform -Output -Path ${env:TF_INFRA_FILE_LOCATION} 
 
   pre-infra:post-deploy:
     context: powershell
