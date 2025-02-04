@@ -2,26 +2,16 @@
 
 contexts:
   powershell:
-    executable:
-      bin: docker
-      args:
-        - run
-        - --rm
-        - -v
-        - ${PWD}:/app
-        - -v
-        - /var/run/docker.sock:/var/run/docker.sock
-        - -w
-        - /app
-        - --env-file
-        - envfile
-        - ensono/eir-infrastructure:1.1.257
-        - pwsh
-        - -NonInteractive
-        - -Command
-    quote: "'"
+    container:
+      name: ensono/eir-infrastructure:1.1.257
+      shell: pwsh
+      shell_args: [
+        "-NonInteractive",
+        "-Command"
+      ]
+    env:
+      PSModulePath: /modules
     envfile:
-      generate: true
       exclude:
         - PATH
         - SOURCEVERSIONMESSAGE
