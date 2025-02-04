@@ -64,7 +64,7 @@ tasks:
         Invoke-Terraform -Output -Path ${env:TF_PRE_INFRA_FILE_LOCATION}
 
         Write-Host "Getting 'infra' Terraform Outputs..."
-        Invoke-Terraform -Output -Path ${env:TF_INFRA_FILE_LOCATION} 
+        Invoke-Terraform -Output -Path ${env:TF_INFRA_FILE_LOCATION}
 
   pre-infra:post-deploy:
     context: powershell
