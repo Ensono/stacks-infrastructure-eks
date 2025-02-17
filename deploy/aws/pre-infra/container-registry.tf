@@ -52,29 +52,29 @@ resource "aws_iam_group_policy_attachment" "ecr_pull_push" {
   policy_arn = aws_iam_policy.ecr_pull_push[0].arn
 }
 
-# TODO: Decide where this goes (ancillary-resources?)
-# ECR Set-up
-# module "ecr_repositories" {
-#   count  = var.container_registry_pull_push_user ? 1 : 0
-#   source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/container_registry?ref=v5.0.5"
+module "ecr_repositories" {
+  count = var.create_registry ? 1 : 0
 
-#   region = var.region
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/container_registry?ref=v6.0.33"
 
-#   repositories = []
+  region = var.region
 
-#   pull_through_cache_setup = {}
+  repositories = [
+    "eks-bottlerocket-cis-bootstrap",
+    "eks-bottlerocket-validation"
+  ]
 
-#   pull_accounts = []
+  pull_through_cache_setup = {}
 
-#   pull_and_push_accounts = [
-#     aws_iam_user.ecr_pull_push[0].arn,
-#   ]
+  pull_accounts = []
 
-#   max_tagged_image_count = 100
+  pull_and_push_accounts = var.container_registry_pull_push_user ? [
+    aws_iam_user.ecr_pull_push[0].arn,
+  ] : []
 
-#   enable_registry_scanning = false
+  max_tagged_image_count = 100
 
-#   repository_lifecycle_policy = local.repository_lifecycle_policy
+  enable_registry_scanning = false
 
-#   repository_image_tag_mutability = "IMMUTABLE"
-# }
+  repository_image_tag_mutability = "IMMUTABLE"
+}
