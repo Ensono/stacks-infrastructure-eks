@@ -4,6 +4,7 @@
     "max_session_duration": 14400,
     "k8s_group_name": "system:masters",
     "users": [
-        "Jack.Blower@ensono.com"
+        "Jack.Blower@ensono.com",
+	    "Baldip.Purewal@ensono.com"
     ]
 }
