@@ -47,8 +47,10 @@ env:
   NON_PROD_CREATE_REGISTRY: true
   NON_PROD_CONTAINER_REGISTRY_PULL_PUSH_USER: true
 
-  PROD_CREATE_REGISTRY: false # Set to true if you want to create a registry in Prod. This is commented out to prevent duplicate repositories being created in the same account.
-  PROD_CONTAINER_REGISTRY_PULL_PUSH_USER: false # Set to true this if a seperate registry is being created in Prod.
+  ## Set to true if you want to create a registry in Prod. This is commented out to prevent duplicate repositories being created in the same account.
+  PROD_CREATE_REGISTRY: false
+  ## Set to true this if a seperate registry is being created in Prod.
+  PROD_CONTAINER_REGISTRY_PULL_PUSH_USER: false
 
   NON_PROD_FIREWALL_ENABLED: false
   PROD_FIREWALL_ENABLED: true
@@ -138,7 +140,7 @@ jobs:
           TF_VAR_dns_create_hostedzone_parent_link: ${{ env.DNS_CREATE_HOSTEDZONE_PARENT_LINK }}
           TF_VAR_dns_parent_hostedzone_name: ${{ env.DNS_PARENT_NAME }}
           TF_VAR_k8s_role_file_map: "[\"../../k8s/users/nonprod-admin-users.json\", \"../../k8s/users/nonprod-developer-users.json\"]"
-          TF_VAR_create_registry:  ${{ env.NON_PROD_CREATE_REGISTRY }}
+          TF_VAR_create_registry: ${{ env.NON_PROD_CREATE_REGISTRY }}
           TF_VAR_container_registry_pull_push_user: ${{ env.NON_PROD_CONTAINER_REGISTRY_PULL_PUSH_USER }}
 
       - name: Infrastructure Deploy
@@ -230,7 +232,7 @@ jobs:
           TF_VAR_dns_create_hostedzone_parent_link: ${{ env.DNS_CREATE_HOSTEDZONE_PARENT_LINK }}
           TF_VAR_dns_parent_hostedzone_name: ${{ env.DNS_PARENT_NAME }}
           TF_VAR_k8s_role_file_map: "[\"../../k8s/users/prod-admin-users.json\", \"../../k8s/users/prod-developer-users.json\"]"
-          TF_VAR_create_registry:  ${{ env.PROD_CREATE_REGISTRY }}
+          TF_VAR_create_registry: ${{ env.PROD_CREATE_REGISTRY }}
           TF_VAR_container_registry_pull_push_user: ${{ env.PROD_CONTAINER_REGISTRY_PULL_PUSH_USER }}
 
       - name: Infrastructure Deploy
