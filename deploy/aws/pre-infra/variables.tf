@@ -57,7 +57,12 @@ variable "k8s_role_file_map" {
 ########################################
 # Container Registry
 ########################################
-variable "container_registry_pull_push_user" {
+variable "create_registry" {
   type        = bool
   description = "Create container registry or use a shared container registry created outside the module"
+}
+
+variable "container_registry_pull_push_user" {
+  type        = bool
+  description = "Create a container registry user"
 }
