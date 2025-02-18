@@ -68,6 +68,17 @@ env:
   EXTERNAL_DNS_NAMESPACE: "external-dns"
   EXTERNAL_DNS_SERVICE_ACCOUNT_NAME: "external-dns"
 
+  # Bottlerocket CIS Validation Job
+  BOTTLEROCKET_CIS_ENABLED: true
+  BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/bottlerocket-cis-bootstrap"
+  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.1.265-amd64"
+
+  # Bottlerocket CIS Validation Job
+  BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED: true
+  BOTTLEROCKET_CIS_VALIDATION_JOB_SCHEDULE: "0 0 * * *"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/bottlerocket-cis-validation"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.1.265-amd64"
+
 jobs:
   Lint:
     runs-on: ubuntu-24.04
@@ -173,6 +184,8 @@ jobs:
           TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
           TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
           TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_bottlerocket_cis_enabled: ${{ env.BOTTLEROCKET_CIS_ENABLED }}
+          TF_VAR_bottlerocket_cis_image: "${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE }}:${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_TAG }}"
 
       - name: Helm Deploy
         run: taskctl helm
