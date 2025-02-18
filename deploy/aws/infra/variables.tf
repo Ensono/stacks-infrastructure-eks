@@ -142,3 +142,18 @@ variable "external_dns_namespace" {
   type        = string
   description = "The Namespace that External DNS will be deployed to"
 }
+
+########################################
+# CIS Bottlerocket
+########################################
+variable "enable_cis_bootstrap" {
+  type        = string
+  default     = true
+  description = "If true, the EKS cluster will be bootstrapped with the CIS Bottlerocket image to ensure the OS is CIS level compliant"
+}
+
+variable "cis_bootstrap_image" {
+  type        = string
+  default     = "ensonostackseuweirdfmu.azurecr.io/ensono/bottlerocket-cis-bootstrap:1.1.265-amd64"
+  description = "The location of the CIS Bottlerocket image"
+}
