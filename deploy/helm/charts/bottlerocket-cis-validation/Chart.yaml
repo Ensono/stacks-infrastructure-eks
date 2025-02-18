@@ -1,0 +1,7 @@
+apiVersion: v2
+name: bottlerocket-cis-validation
+description: A cronjob that runs every midnight to validate the CIS benchmark on Bottlerocket nodes
+
+type: application
+
+version: 0.1.0

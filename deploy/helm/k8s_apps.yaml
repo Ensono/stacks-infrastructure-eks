@@ -41,3 +41,9 @@ charts:
     repo: https://charts.bitnami.com/bitnami
     values_template: deploy/helm/values/external_dns.yaml
     version: 8.5.1
+
+  - name: bottlerocket-cis-validation
+    namespace: bottlerocket-cis-validation
+    location: ./deploy/helm/charts
+    enabled: "${env:BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED}"
+    values_template: deploy/helm/values/bottlerocket_cis_validation.yaml

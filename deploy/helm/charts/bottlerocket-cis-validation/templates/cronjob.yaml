@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bottlerocket-cis-validation
+spec:
+  schedule: {{ .Values.schedule }}
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 600
+      template:
+        metadata:
+          labels:
+            app: bottlerocket-cis-validation
+        spec:
+          hostNetwork: true
+          containers:
+            - name: bottlerocket-cis-validation
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: Always
+              securityContext:
+                capabilities:
+                  add: ["SYS_ADMIN", "NET_ADMIN", "CAP_SYS_ADMIN"]
+              volumeMounts:
+                - mountPath: /.bottlerocket/rootfs
+                  name: btl-root
+          volumes:
+            - name: btl-root
+              hostPath:
+                path: /
+          restartPolicy: Never
