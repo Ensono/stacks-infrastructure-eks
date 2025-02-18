@@ -70,14 +70,14 @@ env:
 
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_ENABLED: true
-  BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/bottlerocket-cis-bootstrap"
-  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.1.265-amd64"
+  BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "docker.io/ensono/bottlerocket-cis-bootstrap"
+  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.1.266"
 
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED: true
   BOTTLEROCKET_CIS_VALIDATION_JOB_SCHEDULE: "0 0 * * *"
-  BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/bottlerocket-cis-validation"
-  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.1.265-amd64"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "docker.io/ensono/bottlerocket-cis-validation"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.1.266"
 
 jobs:
   Lint:
