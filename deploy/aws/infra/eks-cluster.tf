@@ -16,5 +16,8 @@ module "eks" {
   vpc_id              = module.vpc.id
   vpc_private_subnets = module.vpc.private_subnet_ids
 
+  cis_bootstrap_image  = var.cis_bootstrap_image
+  enable_cis_bootstrap = var.enable_cis_bootstrap
+
   tags = local.default_tags
 }
