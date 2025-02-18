@@ -146,7 +146,7 @@ variable "external_dns_namespace" {
 ########################################
 # CIS Bottlerocket
 ########################################
-variable "enable_bottlerocket_cis" {
+variable "bottlerocket_cis_enabled" {
   type        = string
   description = "If true, the EKS cluster will be bootstrapped with the CIS Bottlerocket image to ensure the OS is CIS level compliant"
 }
