@@ -29,6 +29,8 @@ pipelines:
     - task: infra:init
     - task: infra:plan
       depends_on: infra:init
+    - task: infra:apply
+      depends_on: infra:plan
 
   helm:
     - task: infra:helm:apply
