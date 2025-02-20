@@ -277,6 +277,8 @@ jobs:
           TF_VAR_external_dns_enabled: "${{ env.EXTERNAL_DNS_ENABLED }}"
           TF_VAR_external_dns_namespace: "${{ env.EXTERNAL_DNS_NAMESPACE }}"
           TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
+          TF_VAR_bottlerocket_cis_enabled: ${{ env.BOTTLEROCKET_CIS_ENABLED }}
+          TF_VAR_bottlerocket_cis_image: "${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE }}:${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_TAG }}"
 
       - name: Helm Deploy
         run: taskctl helm
