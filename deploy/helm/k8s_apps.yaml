@@ -47,3 +47,11 @@ charts:
     location: ./deploy/helm/charts
     enabled: "${env:BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED}"
     values_template: deploy/helm/values/bottlerocket_cis_validation.yaml
+
+  - name: kyverno
+    namespace: kyverno
+    location: kyverno
+    enabled: "${env:KYVERNO_ENABLED}"
+    repo: https://kyverno.github.io/kyverno/
+    values_template: deploy/helm/values/kyverno.yaml
+    version: 3.3.7
