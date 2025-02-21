@@ -1,0 +1,11 @@
+reportsController:
+  replicas: ${env:KYVERNO_REPORT_REPLICA_COUNT}
+
+admissionController:
+  replicas: ${env:KYVERNO_ADMISSION_CONTROLLER_REPLICA_COUNT}
+
+backgroundController:
+  replicas: ${env:KYVERNO_BACKGROUND_CONTROLLER_REPLICA_COUNT}
+
+cleanupController:
+  replicas: ${env:KYVERNO_CLEANUP_CONTROLLER_REPLICA_COUNT}
