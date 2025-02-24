@@ -89,7 +89,7 @@ env:
   KYVERNO_CLEANUP_CONTROLLER_REPLICA_COUNT: 1
   KYVERNO_POLICIES_ENABLED: true
   # Audit or Enforce: Audit will only log the violations, Enforce will block the deployment
-  KYVERNO_VALIDATION_FAILURE_ACTION: "Audit" 
+  KYVERNO_VALIDATION_FAILURE_ACTION: "Audit"
 
 jobs:
   Lint:
