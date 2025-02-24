@@ -46,7 +46,10 @@ spec:
             - "*amazon-k8s-cni-init*"
             - "*aws-network-policy-agent*"
             - "*kube-proxy*"
-          # It isn't possible to exclude these controls per namespace, so they are excluded globally. Separate policies are created for these.
+          - controlName: "Host Ports"
+            images:
+            - "*amazon-k8s-cni*"
+          # It isn't possible to exclude these controls per pod, so they are excluded globally. Separate policies are created for these.
           - controlName: "HostPath Volumes"
           - controlName: "HostProcess"
           - controlName: "Host Namespaces"
