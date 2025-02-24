@@ -1,11 +1,67 @@
+
 reportsController:
   replicas: ${env:KYVERNO_REPORT_REPLICA_COUNT}
+  image:
+    repository: ghcr.io/kyverno/reports-controller
+    tag: ${env:KYVERNO_VERSION}
 
 admissionController:
   replicas: ${env:KYVERNO_ADMISSION_CONTROLLER_REPLICA_COUNT}
+  container:
+    image:
+      registry: ghcr.io/kyverno/kyverno
+      tag: ${env:KYVERNO_VERSION}
+  initContainer:
+    image:
+      registry: ghcr.io/kyverno/kyvernopre
+      tag: ${env:KYVERNO_VERSION}
 
 backgroundController:
   replicas: ${env:KYVERNO_BACKGROUND_CONTROLLER_REPLICA_COUNT}
+  image:
+    repository: ghcr.io/kyverno/background-controller
+    tag: ${env:KYVERNO_VERSION}
 
 cleanupController:
   replicas: ${env:KYVERNO_CLEANUP_CONTROLLER_REPLICA_COUNT}
+  image:
+    repository: ghcr.io/kyverno/cleanup-controller
+    tag: ${env:KYVERNO_VERSION}
+
+webhooksCleanup:
+  image:
+    repository: bitnami/kubectl
+    tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+
+policyReportsCleanup:
+  image:
+    repository: bitnami/kubectl
+    tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+
+cleanupJobs:
+  admissionReports:
+    image:
+      repository: bitnami/kubectl
+      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+  clusterAdmissionReports:
+    image:
+      repository: bitnami/kubectl
+      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+  updateRequests:
+    image:
+      repository: bitnami/kubectl
+      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+  ephemeralReports:
+    image:
+      repository: bitnami/kubectl
+      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+  clusterEphemeralReports:
+    image:
+      repository: bitnami/kubectl
+      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
+
+crds:
+  migration:
+    image:
+      repository: ghcr.io/kyverno/kyverno-cli
+      tag: ${env:KYVERNO_VERSION}
