@@ -1,7 +1,7 @@
 # stacks-infrastructure-eks
 
 ## Kyverno Admission Controller
-Within this repository, Kyverno is deployed within the EKS cluster.
+This repository includes Kyverno which is deployed within the EKS cluster.
 Kyverno is a policy engine designed for cloud native platform engineering teams. It enables security, automation, compliance, and governance using policy-as-code. 
 By enabling Kyverno into your cluster, it allows you to:
  - Enforce Security Best Practices: Kyverno validate policies can block the creation of resources that do not meet security standards, such as pods running as root or containers with privileged access.
