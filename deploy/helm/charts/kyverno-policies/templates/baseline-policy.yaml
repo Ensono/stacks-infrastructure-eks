@@ -6,7 +6,7 @@ metadata:
     policies.kyverno.io/title: Pod Security Standards (Baseline)
     policies.kyverno.io/category: Pod Security Standards (Baseline)
     policies.kyverno.io/severity: high
-    policies.kyverno.io/version: 1.12.5
+    policies.kyverno.io/min-version: 1.12.5
     kyverno.io/kubernetes-version: "1.28-1.30"
     policies.kyverno.io/description: >-
       The baseline profile of the Pod Security Standards is a collection of the
@@ -46,7 +46,7 @@ spec:
             - "*amazon-k8s-cni-init*"
             - "*aws-network-policy-agent*"
             - "*kube-proxy*"
-          # It isn't possible to exclude these controls per namespace, so they are excluded globally. Seperate policies are created for these.
+          # It isn't possible to exclude these controls per namespace, so they are excluded globally. Separate policies are created for these.
           - controlName: "HostPath Volumes"
           - controlName: "HostProcess"
           - controlName: "Host Namespaces"

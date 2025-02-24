@@ -6,7 +6,7 @@ metadata:
     policies.kyverno.io/title: Disallow hostPath
     policies.kyverno.io/category: Pod Security Standards (Baseline)
     policies.kyverno.io/severity: high
-    policies.kyverno.io/version: 1.12.5
+    policies.kyverno.io/min-version: 1.12.5
     kyverno.io/kubernetes-version: "1.28-1.30"
     policies.kyverno.io/description: >-
       HostPath volumes let Pods use host directories and volumes in containers.
