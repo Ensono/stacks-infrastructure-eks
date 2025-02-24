@@ -1,4 +1,3 @@
-
 reportsController:
   replicas: ${env:KYVERNO_REPORT_REPLICA_COUNT}
   image:
