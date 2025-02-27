@@ -1,0 +1,1 @@
+validationFailureAction: ${env:KYVERNO_VALIDATION_FAILURE_ACTION}

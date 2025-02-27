@@ -55,3 +55,9 @@ charts:
     repo: https://kyverno.github.io/kyverno/
     values_template: deploy/helm/values/kyverno.yaml
     version: 3.3.7
+
+  - name: kyverno-policies
+    namespace: kyverno-policies
+    location: ./deploy/helm/charts
+    enabled: "${env:KYVERNO_POLICIES_ENABLED}"
+    values_template: deploy/helm/values/kyverno-policies.yaml
