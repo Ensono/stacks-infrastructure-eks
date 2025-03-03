@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "external_dns" {
 module "external_dns_irsa_iam_role" {
   count = var.external_dns_enabled ? 1 : 0
 
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v6.0.31"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v7.0.9"
 
   cluster_name            = module.default_label.id
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
