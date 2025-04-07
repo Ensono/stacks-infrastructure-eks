@@ -74,7 +74,6 @@ output "external_dns_role_arn" {
   value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
 }
 
-
 ####################
 # Cert Manager IRSA
 ####################

@@ -69,4 +69,3 @@ charts:
     repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
     version: 2.41.0
-
