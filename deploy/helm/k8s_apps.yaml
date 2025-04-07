@@ -61,3 +61,12 @@ charts:
     location: ./deploy/helm/charts
     enabled: "${env:KYVERNO_POLICIES_ENABLED}"
     values_template: deploy/helm/values/kyverno-policies.yaml
+
+  - name: aws-ebs-csi-driver
+    namespace: ${env:AWS_EBS_CSI_DRIVER_NAMESPACE}
+    location: aws-ebs-csi-driver
+    enabled: "${env:AWS_EBS_CSI_DRIVER_ENABLED}"
+    repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+    values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
+    version: 2.41.0
+

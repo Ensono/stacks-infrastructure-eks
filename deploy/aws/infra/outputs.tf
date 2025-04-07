@@ -73,3 +73,12 @@ output "external_dns_role_arn" {
   description = "The ARN of the AWS Role created for external-dns to use"
   value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
 }
+
+
+####################
+# Cert Manager IRSA
+####################
+output "aws_ebs_csi_driver_role_arn" {
+  description = "The ARN of the AWS Role created for AWS EBS CSI Driver to use"
+  value       = module.ebs_csi_irsa_iam_role[0].irsa_role_arn
+}
