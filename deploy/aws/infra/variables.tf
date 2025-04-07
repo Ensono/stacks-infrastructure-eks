@@ -155,3 +155,21 @@ variable "bottlerocket_cis_image" {
   type        = string
   description = "The location of the CIS Bottlerocket image"
 }
+
+########################################
+# AWS EBS CSI Driver IAM IRSA
+########################################
+variable "aws_ebs_csi_driver_enabled" {
+  type        = bool
+  description = "Whether to enable AWS EBS CSI Driver or not"
+}
+
+variable "aws_ebs_csi_driver_service_account_name" {
+  type        = string
+  description = "The Kubernetes Service Account name for AWS EBS CSI Driver"
+}
+
+variable "aws_ebs_csi_driver_namespace" {
+  type        = string
+  description = "The Namespace that AWS EBS CSI Driver will be deployed to"
+}
