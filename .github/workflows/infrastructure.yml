@@ -92,7 +92,8 @@ env:
   KYVERNO_VALIDATION_FAILURE_ACTION: "Audit"
 
   # AWS EBS CSI Driver
-  AWS_EBS_CSI_DRIVER_ENABLED: true
+  # Disable this as it is not needed for the default EKS cluster and we do not have enough resources to run it
+  AWS_EBS_CSI_DRIVER_ENABLED: false
   AWS_EBS_CSI_DRIVER_NAMESPACE: "aws-ebs-csi-driver"
   AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME: "aws-ebs-csi-driver"
 
