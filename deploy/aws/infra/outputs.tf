@@ -63,7 +63,7 @@ output "cluster_oidc_provider_arn" {
 ####################
 output "cert_manager_role_arn" {
   description = "The ARN of the AWS Role created for cert-manager to use"
-  value       = module.cert_manager_irsa_iam_role[0].irsa_role_arn
+  value       = var.cert_manager_enabled ? module.cert_manager_irsa_iam_role[0].irsa_role_arn : null
 }
 
 ####################
@@ -71,7 +71,7 @@ output "cert_manager_role_arn" {
 ####################
 output "external_dns_role_arn" {
   description = "The ARN of the AWS Role created for external-dns to use"
-  value       = module.external_dns_irsa_iam_role[0].irsa_role_arn
+  value       = var.external_dns_enabled ? module.external_dns_irsa_iam_role[0].irsa_role_arn : null
 }
 
 ####################
@@ -79,5 +79,5 @@ output "external_dns_role_arn" {
 ####################
 output "aws_ebs_csi_driver_role_arn" {
   description = "The ARN of the AWS Role created for AWS EBS CSI Driver to use"
-  value       = module.ebs_csi_irsa_iam_role[0].irsa_role_arn
+  value       = var.aws_ebs_csi_driver_enabled ? module.ebs_csi_irsa_iam_role[0].irsa_role_arn : null
 }
