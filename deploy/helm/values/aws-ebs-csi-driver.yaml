@@ -1,0 +1,5 @@
+controller:
+  serviceAccount:
+    name: "${env:AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME}"
+    annotations:
+      eks.amazonaws.com/role-arn: "${env:TFOUT_aws_ebs_csi_driver_role_arn}"

@@ -38,7 +38,7 @@ env:
   NON_PROD_EKS_DESIRED_NODES: "2"
   PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
-  EKS_NODE_SIZE: "t3.small"
+  EKS_NODE_SIZE: "t3.medium"
 
   CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
   CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
@@ -90,6 +90,11 @@ env:
   KYVERNO_POLICIES_ENABLED: true
   # Audit or Enforce: Audit will only log the violations, Enforce will block the deployment
   KYVERNO_VALIDATION_FAILURE_ACTION: "Audit"
+
+  # AWS EBS CSI Driver
+  AWS_EBS_CSI_DRIVER_ENABLED: true
+  AWS_EBS_CSI_DRIVER_NAMESPACE: "aws-ebs-csi-driver"
+  AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME: "aws-ebs-csi-driver"
 
 jobs:
   Lint:
@@ -198,6 +203,9 @@ jobs:
           TF_VAR_external_dns_service_account_name: "${{ env.EXTERNAL_DNS_SERVICE_ACCOUNT_NAME }}"
           TF_VAR_bottlerocket_cis_enabled: ${{ env.BOTTLEROCKET_CIS_ENABLED }}
           TF_VAR_bottlerocket_cis_image: "${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE }}:${{ env.BOTTLEROCKET_CIS_BOOTSTRAP_TAG }}"
+          TF_VAR_aws_ebs_csi_driver_enabled: "${{ env.AWS_EBS_CSI_DRIVER_ENABLED }}"
+          TF_VAR_aws_ebs_csi_driver_namespace: "${{ env.AWS_EBS_CSI_DRIVER_NAMESPACE }}"
+          TF_VAR_aws_ebs_csi_driver_service_account_name: "${{ env.AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME }}"
 
       - name: Helm Deploy
         run: taskctl helm
