@@ -38,7 +38,7 @@ env:
   NON_PROD_EKS_DESIRED_NODES: "2"
   PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
-  EKS_NODE_SIZE: "t3.small"
+  EKS_NODE_SIZE: "t3.medium"
 
   CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
   CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
@@ -92,8 +92,7 @@ env:
   KYVERNO_VALIDATION_FAILURE_ACTION: "Audit"
 
   # AWS EBS CSI Driver
-  # Disable this as it is not needed for the default EKS cluster and we do not have enough resources to run it
-  AWS_EBS_CSI_DRIVER_ENABLED: false
+  AWS_EBS_CSI_DRIVER_ENABLED: true
   AWS_EBS_CSI_DRIVER_NAMESPACE: "aws-ebs-csi-driver"
   AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME: "aws-ebs-csi-driver"
 
