@@ -1,9 +1,9 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/taskctl/refs/heads/master/schemas/schema_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/eirctl/refs/heads/main/schemas/schema_v1.json
 
 contexts:
   powershell:
     container:
-      name: ensono/eir-infrastructure:1.1.257
+      name: ensono/eir-infrastructure:1.2.22
       shell: pwsh
       shell_args: [
         "-NonInteractive",

@@ -1,0 +1,11 @@
+name: 'Install eirctl'
+description: 'Downloads and installs eirctl'
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+        rm -rf /tmp/eirctl-linux-amd64-${{ env.EirctlVersion }}
+        wget https://github.com/Ensono/eirctl/releases/download/${{ env.EirctlVersion }}/eirctl-linux-amd64 -O /tmp/eirctl-linux-amd64-${{ env.EirctlVersion }}
+        mv /tmp/eirctl-linux-amd64-${{ env.EirctlVersion }} /usr/local/bin/eirctl
+        chmod u+x /usr/local/bin/eirctl
+      shell: bash
