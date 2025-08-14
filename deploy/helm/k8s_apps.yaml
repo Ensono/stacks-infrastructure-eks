@@ -38,9 +38,9 @@ charts:
     namespace: external-dns
     location: external-dns
     enabled: "${env:EXTERNAL_DNS_ENABLED}"
-    repo: https://charts.bitnami.com/bitnami
+    repo: https://kubernetes-sigs.github.io/external-dns/
     values_template: deploy/helm/values/external_dns.yaml
-    version: 8.5.1
+    version: 1.17.0
 
   - name: bottlerocket-cis-validation
     namespace: bottlerocket-cis-validation

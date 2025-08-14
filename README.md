@@ -1,5 +1,7 @@
 # stacks-infrastructure-eks
 
+BREAKING CHANGE: `external-dns` chart has moved away from the Bitnami chart to the Kubernetes SIG chart. If migrating upwards the Bitnami Helm Chart should be removed from the cluster manually.
+
 ## Kyverno Admission Controller
 This repository includes Kyverno which is deployed within the EKS cluster.
 Kyverno is a policy engine designed for cloud native platform engineering teams. It enables security, automation, compliance, and governance using policy-as-code. 
