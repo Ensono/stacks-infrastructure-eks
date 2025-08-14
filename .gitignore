@@ -45,9 +45,9 @@ override.tf.json
 ehthumbs.db
 Thumbs.db
 
-# Taskctl Build
+# Eirctl Build
 envfile
 .env*
 /tmp
 tfplan
-.taskctl/
+.eirctl/
