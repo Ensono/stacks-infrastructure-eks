@@ -1,9 +1,8 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/taskctl/refs/heads/master/schemas/schema_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/eirctl/refs/heads/main/schemas/schema_v1.json
 
-# Import contexts and tasks for Taskctl
 import:
-  - ./build/taskctl/contexts.yaml
-  - ./build/taskctl/tasks.yaml
+  - ./build/eirctl/contexts.yaml
+  - ./build/eirctl/tasks.yaml
 
 watchers:
   lint:
