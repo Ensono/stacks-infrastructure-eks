@@ -23,6 +23,7 @@ charts:
   - name: hierarchical-namespaces
     namespace: hierarchical-namespaces
     location: https://github.com/kubernetes-sigs/hierarchical-namespaces/releases/download/v1.1.0/default.yaml
+    versioning_regex: v([0-9.]+)
     enabled: true
     wrap_raw_yaml: true
 
