@@ -1,6 +1,6 @@
 # Create a VPC for our usage
 module "vpc" {
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/vpc?ref=v6.0.31"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/vpc?ref=v8.0.10"
 
   region = var.region
 

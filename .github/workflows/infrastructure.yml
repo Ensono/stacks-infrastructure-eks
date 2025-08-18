@@ -17,8 +17,6 @@ env:
   #   AWS_TF_STATE_DYNAMOTABLE
   CLOUD_PROVIDER: "aws"
   EirctlVersion: '0.7.6'
-  TF_INFRA_FILE_LOCATION: deploy/aws/infra
-  TF_PRE_INFRA_FILE_LOCATION: deploy/aws/pre-infra
 
   VPC_CIDR: "10.0.0.0/16"
   NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
@@ -28,7 +26,11 @@ env:
   DNS_CREATE_HOSTEDZONE: true
   DNS_CREATE_HOSTEDZONE_PARENT_LINK: true
 
-  CLUSTER_VERSION: "1.30"
+  CLUSTER_VERSION: "1.32"
+  # When you change the cluster version above ^
+  # run `aws eks describe-addon-versions --kubernetes-version <version> --addon-name 'amazon-cloudwatch-observability'`
+  # to get a compatible version of the Containter Insights Addon.
+  CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION: "v4.3.0-eksbuild.1"
   NON_PROD_CLUSTER_SINGLE_AZ: true
   PROD_CLUSTER_SINGLE_AZ: false
 
@@ -113,14 +115,10 @@ jobs:
       - run: eirctl yaml-lint
 
       - name: Pre-Infrastructure Terraform Lint
-        run: eirctl terraform-lint
-        env:
-          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
+        run: eirctl terraform-lint-pre-infra
 
       - name: Infrastructure Terraform Lint
-        run: eirctl terraform-lint
-        env:
-          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
+        run: eirctl terraform-lint-infra
 
   InfraDev:
     if: github.ref != 'refs/heads/main'
@@ -140,7 +138,7 @@ jobs:
 
       - name: Pre-Infrastructure Deploy
         run: |
-          eirctl infrastructure
+          eirctl terraform-infrastructure-pre-infra
           eirctl pre-infra:post-deploy
         env:
           ENV_NAME: nonprod
@@ -149,7 +147,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
           TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
@@ -165,7 +162,7 @@ jobs:
           TF_VAR_container_registry_pull_push_user: ${{ env.CONTAINER_REGISTRY_PULL_PUSH_USER }}
 
       - name: Infrastructure Deploy
-        run: eirctl infrastructure
+        run: eirctl terraform-infrastructure-infra
         env:
           ENV_NAME: nonprod
           # AWS Environmental Config
@@ -173,7 +170,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
           TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
@@ -187,6 +183,7 @@ jobs:
           TF_VAR_firewall_allowed_domain_targets: ${{ env.FIREWALL_ALLOWED_DOMAIN_TARGETS }}
           TF_VAR_firewall_create_tls_alert_rule: ${{ env.NON_PROD_FIREWALL_CREATE_TLS_ALERT_RULE }}
           TF_VAR_cluster_version: ${{ env.CLUSTER_VERSION }}
+          TF_VAR_cluster_addon_container_insights_version: ${{ env.CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION }}
           TF_VAR_cluster_single_az: ${{ env.NON_PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
@@ -236,7 +233,7 @@ jobs:
 
       - name: Pre-Infrastructure Deploy
         run: |
-          eirctl infrastructure
+          eirctl terraform-infrastructure-pre-infra
           eirctl pre-infra:post-deploy
         env:
           ENV_NAME: prod
@@ -245,7 +242,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_FILE_LOCATION: ${{ env.TF_PRE_INFRA_FILE_LOCATION }}
           TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
@@ -261,7 +257,7 @@ jobs:
           TF_VAR_container_registry_pull_push_user: ${{ env.CONTAINER_REGISTRY_PULL_PUSH_USER }}
 
       - name: Infrastructure Deploy
-        run: eirctl infrastructure
+        run: eirctl terraform-infrastructure-infra
         env:
           ENV_NAME: prod
           # AWS Environmental Config
@@ -269,7 +265,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_FILE_LOCATION: ${{ env.TF_INFRA_FILE_LOCATION }}
           TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
@@ -283,6 +278,7 @@ jobs:
           TF_VAR_firewall_allowed_domain_targets: ${{ env.FIREWALL_ALLOWED_DOMAIN_TARGETS }}
           TF_VAR_firewall_create_tls_alert_rule: ${{ env.PROD_FIREWALL_CREATE_TLS_ALERT_RULE }}
           TF_VAR_cluster_version: ${{ env.CLUSTER_VERSION }}
+          TF_VAR_cluster_addon_container_insights_version: ${{ env.CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION }}
           TF_VAR_cluster_single_az: ${{ env.PROD_CLUSTER_SINGLE_AZ }}
           TF_VAR_cluster_endpoint_private_access: ${{ env.CLUSTER_ENDPOINT_PRIVATE_ACCESS }}
           TF_VAR_cluster_endpoint_public_access: ${{ env.CLUSTER_ENDPOINT_PUBLIC_ACCESS }}
