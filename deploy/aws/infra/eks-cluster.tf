@@ -1,17 +1,18 @@
 module "eks" {
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v6.0.31"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v8.0.10"
 
   region = var.region
 
-  cluster_name                    = module.default_label.id
-  cluster_version                 = var.cluster_version
-  eks_desired_nodes               = var.eks_desired_nodes
-  eks_minimum_nodes               = var.eks_minimum_nodes
-  eks_maximum_nodes               = var.eks_maximum_nodes
-  eks_node_size                   = var.eks_node_size
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access = var.cluster_endpoint_private_access
-  cluster_single_az               = var.cluster_single_az
+  cluster_name                            = module.default_label.id
+  cluster_version                         = var.cluster_version
+  cluster_addon_container_insights_config = { addon_version = var.cluster_addon_container_insights_version }
+  eks_desired_nodes                       = var.eks_desired_nodes
+  eks_minimum_nodes                       = var.eks_minimum_nodes
+  eks_maximum_nodes                       = var.eks_maximum_nodes
+  eks_node_size                           = var.eks_node_size
+  cluster_endpoint_public_access          = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access         = var.cluster_endpoint_private_access
+  cluster_single_az                       = var.cluster_single_az
 
   vpc_id              = module.vpc.id
   vpc_private_subnets = module.vpc.private_subnet_ids
