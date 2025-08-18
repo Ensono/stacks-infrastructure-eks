@@ -85,6 +85,11 @@ variable "cluster_enable_container_insights" {
   description = "Whether to install the the Amazon CloudWatch Observability addon to the EKS cluster for Metrics and Application Log Collection"
 }
 
+variable "cluster_addon_container_insights_version" {
+  type        = string
+  description = "The version for the Container Insights Addon 'amazon-cloudwatch-observability'. Addon version is is tied to the Kubernetes Version. See: `aws eks describe-addon-versions --kubernetes-version <version> --addon-name 'amazon-cloudwatch-observability'` for available versions"
+}
+
 variable "eks_minimum_nodes" {
   type        = string
   description = "The minimum number of nodes in the cluster"
