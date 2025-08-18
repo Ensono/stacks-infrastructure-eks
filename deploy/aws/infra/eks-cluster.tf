@@ -1,5 +1,5 @@
 module "eks" {
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v6.0.31"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks?ref=v8.0.10"
 
   region = var.region
 
