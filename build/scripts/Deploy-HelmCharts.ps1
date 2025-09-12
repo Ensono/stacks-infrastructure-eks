@@ -19,13 +19,11 @@ param (
 	$Provider = $env:CLOUD_PROVIDER,
 
 	[string]
-	[Alias("ResourceGroup")]
 	# Identifier for finding the cluster
 	# In the case of Azure this is the resource group name
 	$Identifier,
 
 	[string]
-	[Alias("aksname")]
 	# Name of the cluster
 	$ClusterName,
 

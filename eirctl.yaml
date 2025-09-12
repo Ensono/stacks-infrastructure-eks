@@ -19,17 +19,53 @@ pipelines:
   yaml-lint:
     - task: lint:yaml
 
+  helm:
+    - task: infra:helm:apply
+
+  terraform-lint-pre-infra:
+    - pipeline: terraform-lint
+      env:
+        TF_FILE_LOCATION: "deploy/aws/pre-infra"
+
+  terraform-lint-infra:
+    - pipeline: terraform-lint
+      env:
+        TF_FILE_LOCATION: "deploy/aws/infra"
+
+  terraform-infrastructure-pre-infra:
+    - pipeline: terraform-infrastructure
+      env:
+        TF_FILE_LOCATION: "deploy/aws/pre-infra"
+
+  terraform-infrastructure-infra:
+    - pipeline: terraform-infrastructure
+      env:
+        TF_FILE_LOCATION: "deploy/aws/infra"
+
+  terraform-infrastructure-plan-pre-infra:
+    - pipeline: terraform-infrastructure-plan
+      env:
+        TF_FILE_LOCATION: "deploy/aws/pre-infra"
+
+  terraform-infrastructure-plan-infra:
+    - pipeline: terraform-infrastructure-plan
+      env:
+        TF_FILE_LOCATION: "deploy/aws/infra"
+
+  # Use -pre-infra or -infra versions...
   terraform-lint:
     - task: lint:terraform:format
     - task: lint:terraform:validate
       depends_on: lint:terraform:format
 
-  infrastructure:
+  # Use -pre-infra or -infra versions...
+  terraform-infrastructure:
+    - pipeline: terraform-infrastructure-plan
+    - task: infra:apply
+      depends_on: terraform-infrastructure-plan
+
+  # Use -pre-infra or -infra versions...
+  terraform-infrastructure-plan:
     - task: infra:init
     - task: infra:plan
       depends_on: infra:init
-    - task: infra:apply
-      depends_on: infra:plan
-
-  helm:
-    - task: infra:helm:apply
