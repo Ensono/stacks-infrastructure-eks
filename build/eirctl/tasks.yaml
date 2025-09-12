@@ -76,6 +76,9 @@ tasks:
           -ClusterName ${env:TFOUT_cluster_name} `
           -Provider ${env:CLOUD_PROVIDER} `
           -K8sAuthRequired $false
+    env:
+      TF_PRE_INFRA_FILE_LOCATION: "deploy/aws/pre-infra"
+      TF_INFRA_FILE_LOCATION: "deploy/aws/infra"
 
   pre-infra:post-deploy:
     context: powershell
@@ -92,12 +95,14 @@ tasks:
         Invoke-Terraform -Output -Path ${env:TF_FILE_LOCATION} | /eirctl/build/scripts/Set-EnvironmentVars.ps1 -prefix "TFOUT" -key "value"
 
         Write-Host "Make sure to add these Name Servers to an NS record for '${TF_VAR_dns_hostedzone_name}.' with the values:`n${env:TFOUT_dns_hostedzone_ns_records}"
+    env:
+      TF_FILE_LOCATION: deploy/aws/pre-infra
 
-  # publish:github:
-  #   context: powershell
-  #   description: Publish Release to GitHub
-  #   command:
-  #     - Publish-GitHubRelease -artifactsList "$env:ARTIFACTS_LIST"
-  #   env:
-  #     generateReleaseNotes: $true
-  #     #  PUBLISH_RELEASE: $true
+#  publish:github:
+#    context: powershell
+#    description: Publish Release to GitHub
+#    command:
+#      - Publish-GitHubRelease -artifactsList "$env:ARTIFACTS_LIST"
+#    env:
+#      generateReleaseNotes: $true
+#      #  PUBLISH_RELEASE: $true

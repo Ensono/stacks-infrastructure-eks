@@ -1,53 +1,11 @@
 reportsController:
   replicas: ${env:KYVERNO_REPORT_REPLICA_COUNT}
-  image:
-    tag: ${env:KYVERNO_VERSION}
 
 admissionController:
   replicas: ${env:KYVERNO_ADMISSION_CONTROLLER_REPLICA_COUNT}
-  container:
-    image:
-      tag: ${env:KYVERNO_VERSION}
-  initContainer:
-    image:
-      tag: ${env:KYVERNO_VERSION}
 
 backgroundController:
   replicas: ${env:KYVERNO_BACKGROUND_CONTROLLER_REPLICA_COUNT}
-  image:
-    tag: ${env:KYVERNO_VERSION}
 
 cleanupController:
   replicas: ${env:KYVERNO_CLEANUP_CONTROLLER_REPLICA_COUNT}
-  image:
-    tag: ${env:KYVERNO_VERSION}
-
-webhooksCleanup:
-  image:
-    tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-
-policyReportsCleanup:
-  image:
-    tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-
-cleanupJobs:
-  admissionReports:
-    image:
-      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-  clusterAdmissionReports:
-    image:
-      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-  updateRequests:
-    image:
-      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-  ephemeralReports:
-    image:
-      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-  clusterEphemeralReports:
-    image:
-      tag: ${env:KYVERNO_CLEANUP_JOB_VERSION}
-
-crds:
-  migration:
-    image:
-      tag: ${env:KYVERNO_VERSION}
