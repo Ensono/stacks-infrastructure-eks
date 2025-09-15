@@ -56,7 +56,7 @@ resource "aws_iam_group_policy_attachment" "ecr_pull_push" {
 # ECR Set-up
 # module "ecr_repositories" {
 #   count  = var.container_registry_pull_push_user ? 1 : 0
-#   source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/container_registry?ref=v5.0.5"
+#   source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/container_registry?ref=v8.0.14"
 
 #   region = var.region
 

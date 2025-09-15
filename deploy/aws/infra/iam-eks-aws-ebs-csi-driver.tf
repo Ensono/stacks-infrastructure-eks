@@ -5,7 +5,7 @@ data "aws_iam_policy" "ebs_csi_policy" {
 module "ebs_csi_irsa_iam_role" {
   count = var.aws_ebs_csi_driver_enabled ? 1 : 0
 
-  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v8.0.10"
+  source = "git::https://github.com/Ensono/stacks-terraform//aws/modules/infrastructure_modules/eks_irsa?ref=v8.0.14"
 
   cluster_name            = module.default_label.id
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
