@@ -34,7 +34,7 @@ charts:
     enabled: "${env:INGRESS_NGINX_ENABLED}"
     repo: https://kubernetes.github.io/ingress-nginx
     values_template: deploy/helm/values/ingress_nginx.yaml
-    version: 4.13.1
+    version: 4.13.3
 
   - name: external-dns
     namespace: external-dns
@@ -42,7 +42,7 @@ charts:
     enabled: "${env:EXTERNAL_DNS_ENABLED}"
     repo: https://kubernetes-sigs.github.io/external-dns/
     values_template: deploy/helm/values/external_dns.yaml
-    version: 1.18.0
+    version: 1.19.0
 
   - name: bottlerocket-cis-validation
     namespace: bottlerocket-cis-validation
@@ -56,7 +56,7 @@ charts:
     enabled: "${env:KYVERNO_ENABLED}"
     repo: https://kyverno.github.io/kyverno/
     values_template: deploy/helm/values/kyverno.yaml
-    version: 3.5.1
+    version: 3.5.2
 
   - name: kyverno-policies
     namespace: kyverno-policies
@@ -70,4 +70,4 @@ charts:
     enabled: "${env:AWS_EBS_CSI_DRIVER_ENABLED}"
     repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
-    version: 2.47.0
+    version: 2.49.1
