@@ -3,7 +3,7 @@
 contexts:
   powershell:
     container:
-      name: ensono/eir-infrastructure:1.2.22
+      name: ensono/eir-infrastructure:1.2.26
       shell: pwsh
       shell_args: [
         "-NonInteractive",

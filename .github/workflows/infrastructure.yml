@@ -16,7 +16,7 @@ env:
   #   AWS_TF_STATE_BUCKET
   #   AWS_TF_STATE_DYNAMOTABLE
   CLOUD_PROVIDER: "aws"
-  EirctlVersion: '0.7.6'
+  EirctlVersion: '0.9.0'
 
   VPC_CIDR: "10.0.0.0/16"
   NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
@@ -30,7 +30,7 @@ env:
   # When you change the cluster version above ^
   # run `aws eks describe-addon-versions --kubernetes-version <version> --addon-name 'amazon-cloudwatch-observability'`
   # to get a compatible version of the Containter Insights Addon.
-  CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION: "v4.3.0-eksbuild.1"
+  CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION: "v4.5.0-eksbuild.1"
   NON_PROD_CLUSTER_SINGLE_AZ: true
   PROD_CLUSTER_SINGLE_AZ: false
 
