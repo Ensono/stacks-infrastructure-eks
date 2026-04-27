@@ -50,4 +50,6 @@ envfile
 .env*
 /tmp
 tfplan
-.eirctl/
+
+.eirctl/*
+!.eirctl/.gitkeep
