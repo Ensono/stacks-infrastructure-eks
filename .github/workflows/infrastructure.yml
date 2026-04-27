@@ -309,8 +309,9 @@ jobs:
           CERT_MANAGER_DNS_NAME: ${{ env.PROD_DOMAIN_NAME }}
 
   Release:
-    if: github.ref == 'refs/heads/main'
-    needs: InfraProd
+    # TODO: Change back after confirming Release
+    if: github.ref != 'refs/heads/main'
+    needs: InfraDev
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -341,4 +342,4 @@ jobs:
           tag_name: v${{ steps.gitversion.outputs.semVer }}
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: false
+          prerelease: true
