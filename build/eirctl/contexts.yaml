@@ -1,6 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/eirctl/refs/heads/main/schemas/schema_v1.json
 
 contexts:
+  committed:
+    container:
+      name: alpine:3
+      shell: /bin/sh
+      shell_args: ["-c"]
+
   powershell:
     container:
       name: ensono/eir-infrastructure:1.2.26
