@@ -1,6 +1,26 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Ensono/eirctl/refs/heads/main/schemas/schema_v1.json
 
 tasks:
+  lint:commits:
+    context: committed
+    description: Lint commit messages against Conventional Commits using committed
+    command:
+      - |
+        apk add --no-cache git
+        git config --global safe.directory '*'
+        if [ ! -f /eirctl/.eirctl/committed ]; then
+          echo "Downloading committed binary..."
+          wget -qO- https://github.com/crate-ci/committed/releases/download/v1.1.11/committed-v1.1.11-x86_64-unknown-linux-musl.tar.gz \
+            | tar xz -C /tmp
+          install -m 755 /tmp/committed /eirctl/.eirctl/committed
+        fi
+        if [ -n "$GITHUB_BASE_REF" ]; then
+          RANGE="HEAD^1..HEAD^2"
+        else
+          RANGE="origin/main..HEAD"
+        fi
+        /eirctl/.eirctl/committed $RANGE --no-merge-commit
+
   image-pull:
     context: powershell
     command: ""

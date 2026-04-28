@@ -11,7 +11,7 @@ charts:
     enabled: "${env:CERT_MANAGER_ENABLED}"
     repo: https://charts.jetstack.io
     values_template: deploy/helm/values/cert_manager.yaml
-    version: v1.18.2
+    version: v1.20.2
 
   - name: cert-manager-default-tls
     # We want to deploy the Issuer, Secret, and Cert into the Nginx Namespace
@@ -28,13 +28,14 @@ charts:
     enabled: false
     wrap_raw_yaml: true
 
+  # NOTE: This project is now archived - to be replaced with Traefik
   - name: ingress-nginx
     namespace: ${env:INGRESS_NGINX_NAMESPACE}
     location: ingress-nginx
     enabled: "${env:INGRESS_NGINX_ENABLED}"
     repo: https://kubernetes.github.io/ingress-nginx
     values_template: deploy/helm/values/ingress_nginx.yaml
-    version: 4.13.3
+    version: 4.15.1
 
   - name: external-dns
     namespace: external-dns
@@ -42,7 +43,7 @@ charts:
     enabled: "${env:EXTERNAL_DNS_ENABLED}"
     repo: https://kubernetes-sigs.github.io/external-dns/
     values_template: deploy/helm/values/external_dns.yaml
-    version: 1.19.0
+    version: 1.20.0
 
   - name: bottlerocket-cis-validation
     namespace: bottlerocket-cis-validation
@@ -56,7 +57,7 @@ charts:
     enabled: "${env:KYVERNO_ENABLED}"
     repo: https://kyverno.github.io/kyverno/
     values_template: deploy/helm/values/kyverno.yaml
-    version: 3.5.2
+    version: 3.7.1
 
   - name: kyverno-policies
     namespace: kyverno-policies
@@ -70,4 +71,4 @@ charts:
     enabled: "${env:AWS_EBS_CSI_DRIVER_ENABLED}"
     repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
-    version: 2.49.1
+    version: 2.58.0
