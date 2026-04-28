@@ -14,9 +14,11 @@ env:
   #   AWS_ACCOUNT_ID
   #   AWS_SECRET_ACCESS_KEY
   #   AWS_TF_STATE_BUCKET
-  #   AWS_TF_STATE_DYNAMOTABLE
   CLOUD_PROVIDER: "aws"
-  EirctlVersion: '0.9.0'
+  EirctlVersion: '0.10.0'
+
+  # TENV
+  TENV_AUTO_INSTALL: true
 
   VPC_CIDR: "10.0.0.0/16"
   NON_PROD_VPC_NAT_GATEWAY_PER_AZ: false
@@ -26,11 +28,11 @@ env:
   DNS_CREATE_HOSTEDZONE: true
   DNS_CREATE_HOSTEDZONE_PARENT_LINK: true
 
-  CLUSTER_VERSION: "1.32"
+  CLUSTER_VERSION: "1.33"
   # When you change the cluster version above ^
   # run `aws eks describe-addon-versions --kubernetes-version <version> --addon-name 'amazon-cloudwatch-observability'`
   # to get a compatible version of the Containter Insights Addon.
-  CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION: "v4.5.0-eksbuild.1"
+  CLUSTER_ADDON_CONTAINER_INSIGHTS_VERSION: "v5.3.1-eksbuild.1"
   NON_PROD_CLUSTER_SINGLE_AZ: true
   PROD_CLUSTER_SINGLE_AZ: false
 
@@ -101,12 +103,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set environment variables
         run: |
           cat .github/workflows/infrastructure.env >> $GITHUB_ENV
 
       - uses: ./build/github/templates/install-eirctl
+
+      - run: eirctl commit-lint
 
       - run: eirctl image-pull
 
@@ -145,7 +151,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},use_lockfile=true,encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -168,7 +174,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},use_lockfile=true,encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -240,7 +246,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_PRE_INFRA_STATE_KEY }},use_lockfile=true,encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -263,7 +269,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Terraform Backend Configuration
-          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},dynamodb_table=${{ secrets.AWS_TF_STATE_DYNAMOTABLE }},encrypt=true
+          TF_BACKEND_ARGS: region=${{ env.AWS_TF_STATE_REGION }},access_key=${{ secrets.AWS_ACCESS_KEY_ID }},secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }},bucket=${{ secrets.AWS_TF_STATE_BUCKET }},key=${{ env.AWS_TF_INFRA_STATE_KEY }},use_lockfile=true,encrypt=true
           # Terraform Resource Configuration
           TF_VAR_name_company: ${{ env.COMPANY }}
           TF_VAR_name_project: ${{ env.PROJECT }}
@@ -307,3 +313,40 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.REGION }}
           # Helm Config
           CERT_MANAGER_DNS_NAME: ${{ env.PROD_DOMAIN_NAME }}
+
+  Release:
+    if: github.ref == 'refs/heads/main'
+    needs: InfraProd
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.0
+        with:
+          versionSpec: '5.x'
+
+      - name: Set SemVer Version
+        uses: gittools/actions/gitversion/execute@v3.0
+        id: gitversion
+
+      - name: Tag repo
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          echo "REVISION  -> $GITHUB_SHA"
+          echo "VERSION -> ${{ steps.gitversion.outputs.semVer }}"
+          git tag -a "v${{ steps.gitversion.outputs.semVer }}" -m "ci tag release" $GITHUB_SHA
+          git push origin "v${{ steps.gitversion.outputs.semVer }}"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.gitversion.outputs.semVer }}
+          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false

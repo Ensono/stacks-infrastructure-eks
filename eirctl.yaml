@@ -16,6 +16,9 @@ pipelines:
   setup:
     - task: buildnumber
 
+  commit-lint:
+    - task: lint:commits
+
   yaml-lint:
     - task: lint:yaml
 
