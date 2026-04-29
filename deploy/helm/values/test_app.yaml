@@ -1,1 +1,1 @@
-hostname: ${env:TEST_APP_HOSTNAME}
+hostname: "echo-test.${env:TF_VAR_dns_hostedzone_name}"
