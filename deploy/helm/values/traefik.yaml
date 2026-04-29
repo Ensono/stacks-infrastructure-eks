@@ -54,8 +54,6 @@ ports:
   web:
     port: 8000
     exposedPort: 80
-    redirectTo:
-      port: websecure
   websecure:
     port: 8443
     exposedPort: 443
@@ -83,3 +81,5 @@ logs:
 additionalArguments:
   - "--ping=true"
   - "--ping.entrypoint=web"
+  - "--entrypoints.web.http.redirections.entrypoint.to=:443"
+  - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
