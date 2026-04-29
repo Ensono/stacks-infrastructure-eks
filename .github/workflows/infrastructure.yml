@@ -98,7 +98,7 @@ env:
   TRAEFIK_SERVICE_ACCOUNT_NAME: "traefik"
   TRAEFIK_REPLICA_COUNT: 3
 
-  # Test App to verift cluster functionality after deploy
+  # Test App to verify cluster functionality after deploy
   TEST_APP_ENABLED: true
   TEST_APP_HOSTNAME: "echo-test.nonprod.aws.stacks.ensono.com"
 
