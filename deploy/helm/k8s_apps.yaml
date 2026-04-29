@@ -28,15 +28,6 @@ charts:
     enabled: false
     wrap_raw_yaml: true
 
-  # NOTE: This project is now archived - to be replaced with Traefik
-  - name: ingress-nginx
-    namespace: ${env:INGRESS_NGINX_NAMESPACE}
-    location: ingress-nginx
-    enabled: "${env:INGRESS_NGINX_ENABLED}"
-    repo: https://kubernetes.github.io/ingress-nginx
-    values_template: deploy/helm/values/ingress_nginx.yaml
-    version: 4.15.1
-
   # Needs be deployed before external-dns so that the Gateway resources are present for external-dns to monitor
   - name: traefik
     namespace: ${env:TRAEFIK_NAMESPACE}
