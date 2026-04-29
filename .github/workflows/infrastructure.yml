@@ -56,12 +56,6 @@ env:
   NON_PROD_FIREWALL_CREATE_TLS_ALERT_RULE: false
   PROD_FIREWALL_CREATE_TLS_ALERT_RULE: true
 
-  # Ingress Nginx Helm
-  INGRESS_NGINX_ENABLED: true
-  INGRESS_NGINX_NAMESPACE: "ingress-nginx"
-  INGRESS_NGINX_SERVICE_ACCOUNT_NAME: "ingress-nginx"
-  INGRESS_NGINX_REPLICA_COUNT: 3
-
   # Cert Manager Helm
   CERT_MANAGER_ENABLED: true
   CERT_MANAGER_NAMESPACE: "cert-manager"
@@ -97,6 +91,16 @@ env:
   AWS_EBS_CSI_DRIVER_ENABLED: true
   AWS_EBS_CSI_DRIVER_NAMESPACE: "aws-ebs-csi-driver"
   AWS_EBS_CSI_DRIVER_SERVICE_ACCOUNT_NAME: "aws-ebs-csi-driver"
+
+  # Traefik API Gateway
+  TRAEFIK_ENABLED: true
+  TRAEFIK_NAMESPACE: "traefik"
+  TRAEFIK_SERVICE_ACCOUNT_NAME: "traefik"
+  TRAEFIK_REPLICA_COUNT: 3
+
+  # Test App to verift cluster functionality after deploy
+  TEST_APP_ENABLED: true
+  TEST_APP_HOSTNAME: "echo-test.nonprod.aws.stacks.ensono.com"
 
 jobs:
   Lint:
