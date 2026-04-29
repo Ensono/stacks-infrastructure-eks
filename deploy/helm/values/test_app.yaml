@@ -1,13 +1,1 @@
-app:
-  name: echo-test
-  image: hashicorp/http-echo
-  text: "hello from the cluster!"
-  replicas: 1
-  port: 5678
-
-gateway:
-  name: traefik-gateway
-  namespace: traefik
-  sectionName: websecure
-
 hostname: ${env:TEST_APP_HOSTNAME}

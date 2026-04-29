@@ -10,4 +10,4 @@ gateway:
   namespace: traefik
   sectionName: websecure
 
-hostname: sloe.nonprod.aws.stacks.ensono.com
+hostname: echo-test.nonprod.aws.stacks.ensono.com
