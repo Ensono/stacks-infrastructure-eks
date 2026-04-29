@@ -100,7 +100,6 @@ env:
 
   # Test App to verify cluster functionality after deploy
   TEST_APP_ENABLED: true
-  TEST_APP_HOSTNAME: "echo-test.nonprod.aws.stacks.ensono.com"
 
 jobs:
   Lint:
