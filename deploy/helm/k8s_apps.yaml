@@ -72,3 +72,9 @@ charts:
     repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
     version: 2.58.0
+
+  - name: test-app
+    namespace: test-app
+    location: ./deploy/helm/charts
+    enabled: "${env:TEST_APP_ENABLED}"
+    values_template: deploy/helm/values/test_app.yaml
