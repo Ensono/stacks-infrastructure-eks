@@ -14,8 +14,8 @@ charts:
     version: v1.20.2
 
   - name: cert-manager-default-tls
-    # We want to deploy the Issuer, Secret, and Cert into the Nginx Namespace
-    namespace: ${env:INGRESS_NGINX_NAMESPACE}
+    # We want to deploy the Issuer, Secret, and Cert into the Traefik Namespace
+    namespace: ${env:TRAEFIK_NAMESPACE}
     location: ./deploy/helm/charts
     enabled: ${env:CERT_MANAGER_ENABLED}
     values_template: deploy/helm/values/cert_manager_default_tls.yaml
@@ -72,3 +72,12 @@ charts:
     repo: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     values_template: deploy/helm/values/aws-ebs-csi-driver.yaml
     version: 2.58.0
+
+  - name: traefik
+    namespace: ${env:TRAEFIK_NAMESPACE}
+    location: traefik
+    enabled: "${env:TRAEFIK_ENABLED}"
+    repo: https://traefik.github.io/charts
+    values_template: deploy/helm/values/traefik.yaml
+    version: 39.0.8
+
