@@ -80,4 +80,3 @@ charts:
     repo: https://traefik.github.io/charts
     values_template: deploy/helm/values/traefik.yaml
     version: 39.0.8
-
