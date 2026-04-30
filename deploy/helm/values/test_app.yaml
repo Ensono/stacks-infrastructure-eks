@@ -1,1 +1,1 @@
-hostname: "echo-test.${env:TF_VAR_dns_hostedzone_name}"
+hostname: "echo-test.${env:CERT_MANAGER_DNS_NAME}"
