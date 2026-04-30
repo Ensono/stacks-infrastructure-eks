@@ -1,0 +1,1 @@
+hostname: "echo-test.${env:CERT_MANAGER_DNS_NAME}"

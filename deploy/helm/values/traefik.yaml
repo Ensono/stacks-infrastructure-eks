@@ -1,0 +1,85 @@
+# Traefik API Gateway
+# Configured for AWS NLB, HA replicas, dashboard access, and /ping health checks.
+
+deployment:
+  replicas: ${env:TRAEFIK_REPLICA_COUNT}
+  # Override the liveness/readiness port so /ping is probed via the web entrypoint (port 8000).
+  healthchecksPort: 8000
+
+tolerations:
+  - key: "WorkerAttachedToExtLoadBalancer"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+# Keep Traefik from accidentally taking over existing ingresses during the migration.
+ingressClass:
+  enabled: false
+
+providers:
+  kubernetesIngress:
+    enabled: false
+  kubernetesGateway:
+    enabled: true
+
+# Create a default Gateway resource
+gatewayClass:
+  enabled: true
+  name: traefik
+
+gateway:
+  enabled: true
+  name: traefik-gateway
+  namespace: traefik
+  listeners:
+    web:
+      port: 8000
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+    websecure:
+      port: 8443
+      protocol: HTTPS
+      namespacePolicy:
+        from: All
+      certificateRefs:
+        - name: default-tls-secret
+          namespace: traefik
+
+ports:
+  traefik:
+    expose:
+      default: false
+    exposedPort: 8080
+    # Use port forwarding to access dashboard.  kubectl port-forward deployment/traefik -n traefik 8080:8080
+  web:
+    port: 8000
+    exposedPort: 80
+  websecure:
+    port: 8443
+    exposedPort: 443
+
+# Configure service as AWS NLB
+service:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-subnets: "${env:TFOUT_aws_public_subnets_comma_string}"
+
+# Enable dashboard for debugging and expose it via the web entrypoint.
+api:
+  dashboard: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints: ["traefik"]
+
+logs:
+  general:
+    level: "INFO"
+
+# Ensure ping endpoint is enabled and served on the web entrypoint.
+additionalArguments:
+  - "--ping=true"
+  - "--ping.entrypoint=web"
+  - "--entrypoints.web.http.redirections.entrypoint.to=:443"
+  - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
