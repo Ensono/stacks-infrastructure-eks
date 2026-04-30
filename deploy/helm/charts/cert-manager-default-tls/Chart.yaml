@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cert-manager-default-tls
-description: Extra Resources needed to generate a default certificate for nginx to use
+description: Extra Resources needed to generate a default certificate for traefik to use
 
 type: application
 

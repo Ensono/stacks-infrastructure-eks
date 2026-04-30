@@ -1,0 +1,7 @@
+apiVersion: v2
+name: test-app
+description: A test application to validate cluster
+
+type: application
+
+version: 0.1.0
