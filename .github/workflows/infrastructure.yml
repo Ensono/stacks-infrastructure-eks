@@ -42,7 +42,9 @@ env:
   NON_PROD_EKS_DESIRED_NODES: "2"
   PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
-  EKS_NODE_SIZE: "t3.medium"
+  EKS_NODE_SIZE: "t3.large"
+  NON_PROD_EKS_NODE_TYPE: "SPOT"
+  PROD_EKS_NODE_TYPE: "ON_DEMAND"
 
   CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
   CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
@@ -199,6 +201,7 @@ jobs:
           TF_VAR_eks_desired_nodes: ${{ env.NON_PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_eks_node_type: ${{ env.NON_PROD_EKS_NODE_TYPE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
@@ -294,6 +297,7 @@ jobs:
           TF_VAR_eks_desired_nodes: ${{ env.PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_eks_node_type: ${{ env.PROD_EKS_NODE_TYPE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
