@@ -42,7 +42,7 @@ env:
   NON_PROD_EKS_DESIRED_NODES: "2"
   PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
-  EKS_NODE_SIZE: "t3.large"
+  EKS_NODE_SIZE: "t3.medium"
   NON_PROD_EKS_NODE_TYPE: "SPOT"
   PROD_EKS_NODE_TYPE: "ON_DEMAND"
 
@@ -70,14 +70,14 @@ env:
 
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_ENABLED: true
-  BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "docker.io/ensono/bottlerocket-cis-bootstrap"
-  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.1.266"
+  BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/eir-foundation-powershell:"
+  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.2.107"
 
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED: true
   BOTTLEROCKET_CIS_VALIDATION_JOB_SCHEDULE: "0 0 * * *"
-  BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "docker.io/ensono/bottlerocket-cis-validation"
-  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.1.266"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "ensonostackseuweirdfmu.azurecr.io/ensono/eir-foundation-powershell"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.2.107"
 
   # Kyverno
   KYVERNO_ENABLED: true

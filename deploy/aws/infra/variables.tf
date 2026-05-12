@@ -118,7 +118,7 @@ variable "eks_node_type" {
 
   validation {
     condition     = contains(["ON_DEMAND", "SPOT"], var.eks_node_type)
-    error_message = "Value must be one of ON_DEMAND, or SPOT."
+    error_message = "Value must be one of 'ON_DEMAND', or 'SPOT'."
   }
 }
 
