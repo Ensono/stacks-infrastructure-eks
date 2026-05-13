@@ -110,6 +110,18 @@ variable "eks_node_size" {
   description = "Configure desired spec of nodes for the cluster"
 }
 
+variable "eks_node_type" {
+  type        = string
+  description = "The type of nodes to use for EKS"
+
+  default = "ON_DEMAND"
+
+  validation {
+    condition     = contains(["ON_DEMAND", "SPOT"], var.eks_node_type)
+    error_message = "Value must be one of 'ON_DEMAND', or 'SPOT'."
+  }
+}
+
 ########################################
 # Cert Manager IAM IRSA
 ########################################
