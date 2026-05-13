@@ -28,7 +28,7 @@ env:
   DNS_CREATE_HOSTEDZONE: true
   DNS_CREATE_HOSTEDZONE_PARENT_LINK: true
 
-  CLUSTER_VERSION: "1.33"
+  CLUSTER_VERSION: "1.34"
   # When you change the cluster version above ^
   # run `aws eks describe-addon-versions --kubernetes-version <version> --addon-name 'amazon-cloudwatch-observability'`
   # to get a compatible version of the Containter Insights Addon.
@@ -43,6 +43,10 @@ env:
   PROD_EKS_DESIRED_NODES: "1"
   EKS_MAXIMUM_NODES: "3"
   EKS_NODE_SIZE: "t3.medium"
+
+  # Defaults for clients - Production should be 'ON_DEMAND'
+  NON_PROD_EKS_NODE_TYPE: "SPOT"
+  PROD_EKS_NODE_TYPE: "ON_DEMAND"
 
   CLUSTER_ENDPOINT_PRIVATE_ACCESS: false
   CLUSTER_ENDPOINT_PUBLIC_ACCESS: true
@@ -69,13 +73,13 @@ env:
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_ENABLED: true
   BOTTLEROCKET_CIS_BOOTSTRAP_IMAGE: "docker.io/ensono/bottlerocket-cis-bootstrap"
-  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.1.266"
+  BOTTLEROCKET_CIS_BOOTSTRAP_TAG: "1.2.113"
 
   # Bottlerocket CIS Validation Job
   BOTTLEROCKET_CIS_VALIDATION_JOB_ENABLED: true
   BOTTLEROCKET_CIS_VALIDATION_JOB_SCHEDULE: "0 0 * * *"
   BOTTLEROCKET_CIS_VALIDATION_JOB_IMAGE: "docker.io/ensono/bottlerocket-cis-validation"
-  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.1.266"
+  BOTTLEROCKET_CIS_VALIDATION_JOB_TAG: "1.2.113"
 
   # Kyverno
   KYVERNO_ENABLED: true
@@ -111,7 +115,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          cat .github/workflows/infrastructure.env >> $GITHUB_ENV
+          grep -v '^\s*#' .github/workflows/infrastructure.env >> $GITHUB_ENV
 
       - uses: ./build/github/templates/install-eirctl
 
@@ -137,7 +141,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          cat .github/workflows/infrastructure.env >> $GITHUB_ENV
+          grep -v '^\s*#' .github/workflows/infrastructure.env >> $GITHUB_ENV
 
       - uses: ./build/github/templates/install-eirctl
 
@@ -199,6 +203,7 @@ jobs:
           TF_VAR_eks_desired_nodes: ${{ env.NON_PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_eks_node_type: ${{ env.NON_PROD_EKS_NODE_TYPE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
@@ -232,7 +237,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          cat .github/workflows/infrastructure.env >> $GITHUB_ENV
+          grep -v '^\s*#' .github/workflows/infrastructure.env >> $GITHUB_ENV
 
       - uses: ./build/github/templates/install-eirctl
 
@@ -294,6 +299,7 @@ jobs:
           TF_VAR_eks_desired_nodes: ${{ env.PROD_EKS_DESIRED_NODES }}
           TF_VAR_eks_maximum_nodes: ${{ env.EKS_MAXIMUM_NODES }}
           TF_VAR_eks_node_size: ${{ env.EKS_NODE_SIZE }}
+          TF_VAR_eks_node_type: ${{ env.PROD_EKS_NODE_TYPE }}
           TF_VAR_cert_manager_enabled: "${{ env.CERT_MANAGER_ENABLED }}"
           TF_VAR_cert_manager_namespace: "${{ env.CERT_MANAGER_NAMESPACE }}"
           TF_VAR_cert_manager_service_account_name: "${{ env.CERT_MANAGER_SERVICE_ACCOUNT_NAME }}"
