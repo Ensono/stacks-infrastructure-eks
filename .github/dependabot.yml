@@ -1,19 +1,29 @@
 version: 2
 updates:
   - package-ecosystem: terraform
-    directory: "/deploy/aws/pre-infra"
+    directories:
+      - "/deploy/aws/pre-infra"
+      - "/deploy/aws/infra"
     schedule:
       interval: weekly
       day: monday
       timezone: Europe/London
+    cooldown:
+      default-days: 5
     open-pull-requests-limit: 10
     rebase-strategy: disabled
-
-  - package-ecosystem: terraform
-    directory: "/deploy/aws/infra"
-    schedule:
-      interval: weekly
-      day: monday
-      timezone: Europe/London
-    open-pull-requests-limit: 10
-    rebase-strategy: disabled
+    reviewers:
+      - Ensono/dependency-management
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      terraform:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        group-by: dependency-name
+      terraform-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
